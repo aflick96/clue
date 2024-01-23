@@ -1,0 +1,98 @@
+.board-container {
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.board {
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    height: 50%;
+    width: 50%;
+    padding: 5%;
+}
+
+.tile {
+    display: flex;
+    height: 10vh;
+    width: 10vw;
+    justify-content: center;
+    align-items: center;
+}
+
+.room {
+    border: 1px solid black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.horizontal-hallway {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(97, 97, 97);
+    width: 100%;
+    height: 20%;
+
+}
+
+.vertical-hallway {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(97, 97, 97);
+    width: 20%;
+    height: 100%;
+}
+
+.person {
+    border-radius: 20px;
+    height: 30px;
+    width: 30px;
+}
+
+.player-token-horizontal {
+    height: 80%;
+    width: 10%;
+}
+
+.player-token-vertical {
+    height: 15%;
+    width: 50%;
+}
+
+.player-token.red {
+    background-color: red;
+}
+
+.player-token.yellow {
+    background-color: yellow;
+}
+
+.player-token.white {
+    background-color: white;
+}
+
+.player-token.green {
+    background-color: green;
+}
+
+.player-token.blue {
+    background-color: blue;
+}
+
+.player-token.purple {
+    background-color: purple;
+}
+
+.hallway.occupied {
+    background-color: lightgray;
+}
