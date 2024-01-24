@@ -6,7 +6,7 @@ const UserForm = ({ onJoinLobby, availableCharacters }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onJoinLobby({'name': name, 'character': selectedCharacter, 'ready': false});
+        onJoinLobby({'name': name, 'character': selectedCharacter, 'color': null, 'ready': false, 'position': null});
     };
     
     return(

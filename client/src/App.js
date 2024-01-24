@@ -54,7 +54,7 @@ const App = () => {
     <div>
       {
         playersReady ? (
-          <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user} playerOne={usersInLobby[0]}/>
+          <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user}/>
         ) : 
         !user ? (
           <UserForm onJoinLobby={handleJoinLobby} availableCharacters={availableCharacters}/>
