@@ -33,6 +33,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    position: relative;
 }
 
 .horizontal-hallway {
@@ -102,4 +103,40 @@
 .room h3 {
     position: relative;
     top: -10px;
+}
+
+.passage.Study {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    height: 2vh;
+    width: 1vw;
+    background-color: rgb(255, 255, 255);
+}
+
+.passage.Lounge {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 2vh;
+    width: 1vw;
+    background-color: rgb(255, 255, 255);
+}
+
+.passage.Conservatory {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    height: 2vh;
+    width: 1vw;
+    background-color: rgb(255, 255, 255);
+}
+
+.passage.Kitchen {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 2vh;
+    width: 1vw;
+    background-color: rgb(255, 255, 255);
 }

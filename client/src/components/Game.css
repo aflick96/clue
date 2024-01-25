@@ -1,0 +1,25 @@
+.game {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.game.messages {
+    position: absolute;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    top: 20px;
+    left: 20px;
+    border: 2px solid black;
+    padding: 5px;
+    font-size: 15px;
+}
+
+.board {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    transform: translate(0%, 0%);
+}

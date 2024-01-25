@@ -43,7 +43,7 @@ const Board = ({ players }) => {
                 <Box sx={{ flexGrow: 1 }}>
                     <Grid container spacing={1}>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Room className='room' name="Study" players={roomPositions.study}/>
+                            <Room className='room' name="Study" players={roomPositions.study} corner={true}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-study-hall']}/>
@@ -55,7 +55,7 @@ const Board = ({ players }) => {
                             <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-hall-lounge']}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Room className='room' name="Lounge" players={roomPositions.lounge}/>
+                            <Room className='room' name="Lounge" players={roomPositions.lounge} corner={true}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={1}>
@@ -111,7 +111,7 @@ const Board = ({ players }) => {
                     </Grid>
                     <Grid container spacing={1}>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Room className='room' name="Conservatory" players={roomPositions.conservatory}/>
+                            <Room className='room' name="Conservatory" players={roomPositions.conservatory} corner={true}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                         <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-conservatory-ballroom']}/>
@@ -123,7 +123,7 @@ const Board = ({ players }) => {
                             <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-ballroom-kitchen']}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Room className='room' name="Kitchen" players={roomPositions.kitchen}/>
+                            <Room className='room' name="Kitchen" players={roomPositions.kitchen} corner={true}/>
                         </Grid>
                     </Grid>
                 </Box>

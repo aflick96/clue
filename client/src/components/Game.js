@@ -1,34 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Board from './Board';
+import GameSheet from './GameSheet';
+import ActionMenu from './ActionMenu';
+import './Game.css';
 
 const Game = ({ hasGameStarted, socket, localPlayerName }) => {
     const [p, setP] = useState({});
     const [players, setPlayers] = useState([]);
     const isCurrentPlayer = p.name === localPlayerName;
-    
-    const possibleMovements = {
-        'hallway-study-hall': ['study', 'hall'],
-        'hallway-hall-lounge': ['hall', 'lounge'],
-        'hallway-study-library': ['study', 'library'],
-        'hallway-hall-billiard': ['hall', 'billiard'],
-        'hallway-lounge-dining': ['lounge', 'dining'],
-        'hallway-library-billiard': ['library', 'billiard'],
-        'hallway-billiard-dining': ['billiard', 'dining'],
-        'hallway-library-conservatory': ['library', 'conservatory'],
-        'hallway-billiard-ballroom': ['billiard', 'ballroom'],
-        'hallway-dining-kitchen': ['dining', 'kitchen'],
-        'hallway-conservatory-ballroom': ['conservatory', 'ballroom'],
-        'hallway-ballroom-kitchen': ['ballroom', 'kitchen'],
-        'study': ['kitchen', 'hallway-study-hall', 'hallway-study-library'],
-        'hall': ['hallway-study-hall', 'hallway-hall-lounge', 'hallway-hall-billiard', 'hallway-hall-lounge'],
-        'lounge': ['hallway-hall-lounge', 'hallway-lounge-dining', 'conservatory'],
-        'library': ['hallway-study-library', 'hallway-library-billiard', 'hallway-library-conservatory'],
-        'billiard': ['hallway-hall-billiard', 'hallway-library-billiard', 'hallway-billiard-dining', 'hallway-billiard-ballroom'],
-        'dining': ['hallway-lounge-dining', 'hallway-billiard-dining', 'hallway-dining-kitchen'],
-        'conservatory': ['lounge', 'hallway-library-conservatory', 'hallway-conservatory-ballroom'],
-        'ballroom': ['hallway-billiard-ballroom', 'hallway-conservatory-ballroom', 'hallway-ballroom-kitchen'],
-        'kitchen': ['hallway-dining-kitchen', 'hallway-ballroom-kitchen', 'study'],
-    };
+    const [playerMessages, setPlayerMessages] = useState([]);
     
     useEffect(() => {
         socket.emit('setup', localPlayerName);
@@ -51,6 +31,10 @@ const Game = ({ hasGameStarted, socket, localPlayerName }) => {
             setPlayers(updatedPlayers);
         });
         //
+
+        socket.on('updatePlayerMessages', (playerMessages) => { 
+            setPlayerMessages(playerMessages);
+        });
 
         //Remove user from list if they have disconnected
         return () => {
@@ -77,24 +61,57 @@ const Game = ({ hasGameStarted, socket, localPlayerName }) => {
     return(
         <div>
             {hasGameStarted ? (
-                <div>
-                    <p>Current Player: {p.name}</p>
+                <div className='game'>
+                    <Board className="board" players={players}></Board>
+                    <div>
+                        <div>
+                            {p.name}
+                            <br/>
+                            {p.character}
+                            {/* To add user cards */}
+                        </div>
+                            {isCurrentPlayer ? (
+                                <div style={{display:'flex', flexDirection: 'row'}}>
+                                    <ActionMenu socket={socket} currentPlayer={p} players={players} isDisabled={false}/>
+                                    <GameSheet/>
+                                </div>
+                            ) : (
+                                <div style={{display:'flex', flexDirection: 'row'}}>
+                                    <ActionMenu currentPlayer={p} players={players} isDisabled={true}/>
+                                    <GameSheet/>
+                                </div>
+                            )
+                            }
+                        
+                    </div>
+                    {/* <div className='game messages'>
+                        <p>Current Player's Turn: {p.name}</p>
+                        <p>Current Player's Character: {p.character}</p>
+                        <br/><br/>
+                        <p>What Happened Last Turn:</p>
+                        <p>Previous Player: {playerMessages.previousPlayer}</p>
+                        <p>Previous Move: {playerMessages.previousMove}</p>
+                    </div>
                     {isCurrentPlayer && (
                         <div>
                             <div>
                                 <p>Current Position: {p.position}</p>
                                 <p>Your Character: {p.character}</p>
                                 <p>Possible Movements:</p>
-                                {possibleMovements[p.position] && possibleMovements[p.position].map((position, index) => (
-                                    <button key={index} onClick={() => updatePlayerPosition(p, position)}>{position}</button>
-                                ))}
+                                {possibleMovements[p.position] && possibleMovements[p.position].map((position, index) => {
+                                    const isPositionOccupied = players.some(player => player.position === position);
+                                    return(
+                                        <button key={index} disabled={isPositionOccupied} onClick={() => !isPositionOccupied && updatePlayerPosition(p, position)}>
+                                            {position}
+                                        </button>
+                                    );                                    
+                                })}
                             </div>
 
                             <br/>
                             <button onClick={handleTurnEnd}>End Turn</button>
                         </div>
-                    )}
-                    <Board players={players}></Board>
+                    )} */}
                 </div>
             ) : (
                 <div></div>

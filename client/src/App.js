@@ -9,7 +9,8 @@ const App = () => {
   const [socket, setSocket] = useState(null);
   const [user, setUser] = useState(null);
   const [usersInLobby, setUsersInLobby] = useState([]);
-  const availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
+  const [availableCharacters, setAvailableCharacters] = useState([]);
+  // const availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
   const [playersReady, setPlayersReady] = useState(false);
 
 
@@ -24,6 +25,17 @@ const App = () => {
     clientSocket.on('updateLobby', (users) => {
       setUsersInLobby(users);
     });
+    //
+
+    //Update the available characters when a user selects a character
+    clientSocket.on('charactersUpdated', (characters) => {
+      setAvailableCharacters(characters);
+      console.log(characters)
+    });
+    //
+
+    //Get the list of available characters from the server
+    clientSocket.emit('getCharacters');
     //
 
     //Check if all players have joined the game --> render the game board when all users have selected ready
@@ -41,6 +53,7 @@ const App = () => {
     if (socket) {
       //Update server with new user data
       socket.emit('joinLobby', user_data);
+      socket.emit('characterSelected', user_data.character);
     }
   };
 

@@ -1,0 +1,38 @@
+.gamesheet {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.gamesheet label {
+    font-size: 18px;
+}
+
+.label-lvl-1 {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.gamesheet li {
+    font-size: 12px;
+}
+
+label.list-items {
+    font-size: 12px;
+    width: 80px;
+}
+
+input[type="checkbox"] {
+    transform: scale(0.75);
+}
+
+.checklist {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.weapons {
+    display: flex;
+    flex-direction: column;
+}

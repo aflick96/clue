@@ -1,0 +1,35 @@
+.userform {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+
+.userform form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.userform input {
+    width: 200px;
+}
+
+.userform select {
+    width: 210px;
+}
+
+.userform button {
+    margin-top: 20px;
+}
+
+.userform p {
+    position: relative;
+    top: 0;
+    padding: 0;
+}
