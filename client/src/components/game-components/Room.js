@@ -5,7 +5,7 @@ const Room = ({ name, players, corner }) => {
         <div className='room'>
             <h3>{name}</h3>
             {players.map(player => (
-                <PlayerToken key={player.name} {...player}/>
+                <PlayerToken key={player.name} className='room' {...player}/>
             ))}
             {corner && <Passage room={name}/>}
         </div>

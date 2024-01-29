@@ -1,25 +1,7 @@
-.board-container {
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    width: 100vw;
-}
-
-.board {
-    display: flex;
-    align-self: center;
-    justify-content: center;
-    align-items: center;
-    border: 2px solid black;
-    height: 50%;
-    width: 50%;
-    padding: 5%;
-}
-
 .tile {
     display: flex;
-    height: 10vh;
-    width: 10vw;
+    height: 13vh;
+    width: 6vw;
     justify-content: center;
     align-items: center;
 }
@@ -69,6 +51,11 @@
 .player-token-vertical {
     height: 15%;
     width: 50%;
+}
+
+.player-token-room {
+    height: 25%;
+    width: 20%;
 }
 
 .player-token.red {
@@ -139,4 +126,17 @@
     height: 2vh;
     width: 1vw;
     background-color: rgb(255, 255, 255);
+}
+
+.alert-message {
+    background-color: rgb(255, 171, 171);
+    font-size: 10px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    width: 5vw;
+    /* or any specific width */
+    padding: 10px;
+    /* optional, for some internal spacing */
+    margin: 10px 0;
+    /* optional, for spacing outside the alert */
 }

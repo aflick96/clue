@@ -1,0 +1,35 @@
+.title {
+    margin-left: 25px;
+}
+
+.user-information {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.user-identity>p {
+    margin: 0px;
+}
+
+.user-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.user-character {
+    font-size: 12px;
+}
+
+.user-items>p {
+    margin: 0px;
+}
+
+.user-items>div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80px;
+    width: 100px;
+    border: 1px solid black;
+}

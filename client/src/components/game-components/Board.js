@@ -38,9 +38,8 @@ const Board = ({ players }) => {
     const distribution = 12/5;
 
     return(
-        <div className='board-container'>
-            <div className="board">
-                <Box sx={{ flexGrow: 1 }}>
+            <div className='board'>
+                <Box>
                     <Grid container spacing={1}>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Study" players={roomPositions.study} corner={true}/>
@@ -127,9 +126,7 @@ const Board = ({ players }) => {
                         </Grid>
                     </Grid>
                 </Box>
-
             </div>
-        </div>
     );
 };
 

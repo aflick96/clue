@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
-import UserForm from './components/UserForm';
-import Lobby from './components/Lobby';
-import Game from './components/Game';
+import UserForm from './components/start-components/UserForm';
+import Lobby from './components/start-components/Lobby';
+import Game from './components/game-components/Game';
+import GameHeader from './components/header-components/GameHeader';
+import Grid from '@mui/material/Grid';
+
 const ENDPOINT = "http://127.0.0.1:5000";
 
 const App = () => {
@@ -12,7 +15,6 @@ const App = () => {
   const [availableCharacters, setAvailableCharacters] = useState([]);
   // const availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
   const [playersReady, setPlayersReady] = useState(false);
-
 
   useEffect(() => {
 
@@ -24,6 +26,7 @@ const App = () => {
     //Update the users in the lobby when the server emits an updated list
     clientSocket.on('updateLobby', (users) => {
       setUsersInLobby(users);
+      console.log(users);
     });
     //
 
@@ -67,7 +70,10 @@ const App = () => {
     <div>
       {
         playersReady ? (
-          <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user}/>
+          <Grid container style={{height: '100vh', margin: '0px', padding: '0px'}}> 
+            <GameHeader users={usersInLobby} user={user}/>
+            <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user}/>
+          </Grid>
         ) : 
         !user ? (
           <UserForm onJoinLobby={handleJoinLobby} availableCharacters={availableCharacters}/>

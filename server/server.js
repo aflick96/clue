@@ -17,13 +17,22 @@ app.use(cors());
 let users = [];
 let currentTurn = 0; let previousTurn = 0;
 let availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
+let playerActions = [];
+
 const caseFile = {
     'suspect': 'Mr. Green',
     'weapon': 'Rope',
     'room': 'Conservatory'
 };
 
-let playerMessages = {};
+
+//List of all game items -> use this to randomly assign each player three items.
+const gameItems = 
+    ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White",
+    "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench",
+    "Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"
+    ]
+//
 
 io.on('connection', (socket) => {
     console.log('New client connected');
@@ -59,6 +68,14 @@ io.on('connection', (socket) => {
         users.forEach(user => {
             if (user.name === userName) {
                 user.ready = true;
+                let userItems = [];
+                for (let i = 0; i < 3; i++) {
+                    const item = gameItems[Math.floor(Math.random() * gameItems.length)];
+                    userItems.push(item);
+                    gameItems.splice(gameItems.indexOf(item), 1);
+                }
+                user.items = userItems;
+                console.log(user)
             }
         })
         io.emit('updateLobby', users);
@@ -80,35 +97,61 @@ io.on('connection', (socket) => {
 
     //Update the current player
     socket.on('completeTurn', () => {
-        previousTurn = currentTurn;
         currentTurn = (currentTurn + 1) % users.length;
-
-        playerMessages = {
-            'previousPlayer': users[previousTurn].name, 
-            'previousMove': users[previousTurn].position, 
-        };
-
-        io.emit('updatePlayerMessages', playerMessages);
         io.emit('playerTurn', users[currentTurn]);
     });
     //
 
     //Update the position when a player has moved
     socket.on('updatePlayerPosition', (player, newPosition) => {
+        
+        let pos;
+        
         users.forEach((user, index) => {
             if (user.name === player.name) {
+                pos = users[index].position; 
                 users[index].position = newPosition;
             }
         });
+
+        console.log(users);
+
+        //Update the game log with the player's move
+        playerActions.push(
+            {
+                message: player.character + '(' + player.name + ')' + ' moved from ' + pos + ' to ' + newPosition, 
+                timestamp: new Date().toLocaleTimeString()
+            }
+        );
+        //
+        
         io.emit('playersUpdated', users);
+        io.emit('updateGameLog', playerActions);
     });
     //
+
+    socket.on('makeSuggestion', (suggestion) => {
+        
+        //update the game log with the player's suggestion
+        playerActions.push(
+            {
+                message: suggestion.name + ' (' + suggestion.player_character + ') suggested that ' + suggestion.character + ' did it with the ' + suggestion.weapon + ' in the ' + suggestion.room, 
+                timestamp: new Date().toLocaleTimeString()
+            }
+        );
+        //
+
+        io.emit('updateGameLog', playerActions);
+    });
+
     
     //Remove user from list if they have disconnected
     socket.on('disconnect', () => {
         console.log('Client disconnected');
         users = users.filter(u => u.name !== socket.name) //remove user from users array if they disconnect
-        availableCharacters.push(socket.character); //add the user's character back to the available characters
+        if(socket.character !== null || socket.character !== undefined || socket.character !== '') {
+            availableCharacters.push(socket.character); //add the user's character back to the available characters
+        }
         io.emit('updateLobby', users); //update the lobby with the new list of users
     });
     //
