@@ -26,7 +26,6 @@ const App = () => {
     //Update the users in the lobby when the server emits an updated list
     clientSocket.on('updateLobby', (users) => {
       setUsersInLobby(users);
-      console.log(users);
     });
     //
 
@@ -76,7 +75,7 @@ const App = () => {
           </Grid>
         ) : 
         !user ? (
-          <UserForm onJoinLobby={handleJoinLobby} availableCharacters={availableCharacters}/>
+          <UserForm onJoinLobby={handleJoinLobby} availableCharacters={availableCharacters} socket={socket}/>
         ) : (
           <Lobby users={usersInLobby} onUserStartGame={handleUserReady}/>
         )

@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 import './UserForm.css';
 
-const UserForm = ({ onJoinLobby, availableCharacters }) => {
+const UserForm = ({ onJoinLobby, availableCharacters, socket }) => {
     const [name, setName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onJoinLobby({'name': name, 'character': selectedCharacter, 'color': null, 'ready': false, 'position': null});
+
+        //Check if the username is already taken. If not, join the lobby
+        socket.emit('getUsers', (users) => {
+            let userExists = users.some(user => user.name === name);
+            if (userExists) {
+                alert('Username ' + name + ' is already taken.');
+                return;
+            } else {
+                onJoinLobby({'name': name, 'character': selectedCharacter, 'color': null, 'ready': false, 'position': null, 'items': []});
+            }
+        });
     };
     
     return(

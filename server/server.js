@@ -15,16 +15,15 @@ app.use(cors());
 
 //Store the joined users on the server side --> array of objects {name, character, ready, character color, position}
 let users = [];
-let currentTurn = 0; let previousTurn = 0;
+let currentTurn = 0;
 let availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
 let playerActions = [];
 
 const caseFile = {
-    'suspect': 'Mr. Green',
-    'weapon': 'Rope',
-    'room': 'Conservatory'
+    'suspect': '',
+    'weapon': '',
+    'room': ''
 };
-
 
 //List of all game items -> use this to randomly assign each player three items.
 const gameItems = 
@@ -40,6 +39,12 @@ io.on('connection', (socket) => {
     //send the list of characters available to the client when they join the connection (localhost:3000)
     socket.on('getCharacters', () => {
         socket.emit('charactersUpdated', availableCharacters);
+    });
+    //
+
+    //send the list of users to the client when they join the connection (localhost:3000)
+    socket.on('getUsers', (callback) => {
+        callback(users);
     });
     //
 
@@ -68,6 +73,8 @@ io.on('connection', (socket) => {
         users.forEach(user => {
             if (user.name === userName) {
                 user.ready = true;
+
+                //Randomly assign each player three items
                 let userItems = [];
                 for (let i = 0; i < 3; i++) {
                     const item = gameItems[Math.floor(Math.random() * gameItems.length)];
@@ -75,6 +82,7 @@ io.on('connection', (socket) => {
                     gameItems.splice(gameItems.indexOf(item), 1);
                 }
                 user.items = userItems;
+                //
                 console.log(user)
             }
         })
@@ -90,7 +98,7 @@ io.on('connection', (socket) => {
     //
 
     //Set the players state to the list of players in the lobby
-    socket.on('setup', (playerName) => {
+    socket.on('setup', () => {
         io.emit('firstRender', users);
         io.emit('playerTurn', users[currentTurn]);
     });
@@ -116,13 +124,18 @@ io.on('connection', (socket) => {
 
         console.log(users);
 
-        //Update the game log with the player's move
-        playerActions.push(
-            {
-                message: player.character + '(' + player.name + ')' + ' moved from ' + pos + ' to ' + newPosition, 
-                timestamp: new Date().toLocaleTimeString()
-            }
-        );
+
+        //update the game log with the player's move
+        let newMoveLogMessage = {
+            message: player.character + '(' + player.name + ')' + ' moved from ' + pos + ' to ' + newPosition, 
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        let exists = playerActions.some(action => action.message === newMoveLogMessage.message && action.timestamp === newMoveLogMessage.timestamp);
+
+        if (!exists) { 
+            playerActions.unshift(newMoveLogMessage);
+        }
         //
         
         io.emit('playersUpdated', users);
@@ -131,14 +144,18 @@ io.on('connection', (socket) => {
     //
 
     socket.on('makeSuggestion', (suggestion) => {
-        
+    
         //update the game log with the player's suggestion
-        playerActions.push(
-            {
-                message: suggestion.name + ' (' + suggestion.player_character + ') suggested that ' + suggestion.character + ' did it with the ' + suggestion.weapon + ' in the ' + suggestion.room, 
-                timestamp: new Date().toLocaleTimeString()
-            }
-        );
+        let newSuggestionLogMessage = {
+            message: suggestion.name + ' (' + suggestion.player_character + ') suggested that ' + suggestion.character + ' did it with the ' + suggestion.weapon + ' in the ' + suggestion.room, 
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        let exists = playerActions.some(action => action.message === newSuggestionLogMessage.message && action.timestamp === newSuggestionLogMessage.timestamp);
+
+        if (!exists) {
+            playerActions.unshift(newSuggestionLogMessage);
+        };
         //
 
         io.emit('updateGameLog', playerActions);
@@ -148,11 +165,24 @@ io.on('connection', (socket) => {
     //Remove user from list if they have disconnected
     socket.on('disconnect', () => {
         console.log('Client disconnected');
-        users = users.filter(u => u.name !== socket.name) //remove user from users array if they disconnect
-        if(socket.character !== null || socket.character !== undefined || socket.character !== '') {
-            availableCharacters.push(socket.character); //add the user's character back to the available characters
-        }
-        io.emit('updateLobby', users); //update the lobby with the new list of users
+        let userName = socket.name;
+
+        users.forEach(user => {
+            if (user.name === userName) {
+                availableCharacters.push(user.character);
+                if(user.items.length > 0) { gameItems.push(...user.items); }
+                user.character = null;
+                user.color = null;
+                user.position = null;
+                user.ready = false;
+                user.items = [];
+            }
+        }); 
+
+        users = users.filter(u => u.name !== userName);
+
+        io.emit('charactersUpdated', availableCharacters);
+        io.emit('updateLobby', users);
     });
     //
 
@@ -181,4 +211,23 @@ const addPlayerStartingPostions = () => {
         });
     });
 };
+//
+
+//Build the case file with a random suspect, weapon, and room when the server starts
+const buildCaseFile = () => {
+    const suspect = gameItems[Math.floor(Math.random() * 6)];
+    const weapon = gameItems[Math.floor(Math.random() * 6) + 6];
+    const room = gameItems[Math.floor(Math.random() * 9) + 12];
+    caseFile.suspect = suspect;
+    caseFile.weapon = weapon;
+    caseFile.room = room;
+    
+    gameItems.splice(gameItems.indexOf(suspect), 1);
+    gameItems.splice(gameItems.indexOf(weapon), 1);
+    gameItems.splice(gameItems.indexOf(room), 1);
+    
+    console.log(caseFile);
+};
+
+buildCaseFile();
 //

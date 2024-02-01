@@ -15,7 +15,7 @@ const Game = ({ hasGameStarted, socket, localPlayerName }) => {
     const [suggestionLogMessages, setSuggestionLogMessages] = useState([]);
     
     useEffect(() => {
-        socket.emit('setup', localPlayerName);
+        socket.emit('setup');
     }, [socket, localPlayerName])
 
     useEffect(() => {
@@ -36,8 +36,9 @@ const Game = ({ hasGameStarted, socket, localPlayerName }) => {
         });
         //
 
-        socket.on('updateGameLog', (action) => {
-            setGameLogMessages([...gameLogMessages, ...action]);
+        socket.on('updateGameLog', (actions) => {
+            console.log(actions);
+            setGameLogMessages(actions);
         });
 
         //Remove user from list if they have disconnected
@@ -58,8 +59,6 @@ const Game = ({ hasGameStarted, socket, localPlayerName }) => {
     //
 
     const updatePlayerSuggestionLog = (suggestion) => {
-        console.log(suggestion);
-        console.log(players);
         setSuggestionLogMessages([...suggestionLogMessages, suggestion]);
     };
 
