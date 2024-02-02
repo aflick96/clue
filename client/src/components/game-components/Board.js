@@ -8,15 +8,15 @@ const Board = ({ players }) => {
 
     //TODO: this is unnecessary, just use the players array
     const roomPositions = {
-        study: players.filter(p => p.position === 'study'),
-        hall: players.filter(p => p.position === 'hall'),
-        lounge: players.filter(p => p.position === 'lounge'),
-        library: players.filter(p => p.position === 'library'),
-        billiard: players.filter(p => p.position === 'billiard Room'),
-        dining: players.filter(p => p.position === 'dining'),
-        conservatory: players.filter(p => p.position === 'conservatory'),
-        ballroom: players.filter(p => p.position === 'ballroom'),
-        kitchen: players.filter(p => p.position === 'kitchen')
+        study: players.filter(p => p.position === 'Study'),
+        hall: players.filter(p => p.position === 'Hall'),
+        lounge: players.filter(p => p.position === 'Lounge'),
+        library: players.filter(p => p.position === 'Library'),
+        billiard: players.filter(p => p.position === 'Billiard Room'),
+        dining: players.filter(p => p.position === 'Dining Room'),
+        conservatory: players.filter(p => p.position === 'Conservatory'),
+        ballroom: players.filter(p => p.position === 'Ballroom'),
+        kitchen: players.filter(p => p.position === 'Kitchen')
     };
 
     const hallwayPositions = {

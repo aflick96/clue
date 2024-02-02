@@ -1,0 +1,36 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 5px;
+}
+
+.item-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.image-container {
+    position: relative;
+    /* Set the container to relative positioning */
+    max-width: 100%;
+    max-height: 100%;
+    /* Adjust the maximum height as needed */
+
+}
+
+.item-label {
+    position: absolute;
+    /* Set the <p> tag to absolute positioning */
+    bottom: 0;
+    /* Place it at the bottom of the container */
+    left: 0;
+    /* Adjust the left position as needed */
+    width: 100%;
+    /* Make it span the entire width of the container */
+    background-color: rgba(0, 0, 0, 0.479);
+    /* Optional: Add a background color for better readability */
+    color: white;
+    margin: 0px;
+}

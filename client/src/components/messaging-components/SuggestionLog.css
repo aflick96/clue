@@ -10,3 +10,9 @@
 .suggestionlog>p {
     font-weight: bold;
 }
+
+.card.suggestionlog-message {
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+}

@@ -1,19 +1,19 @@
 .board-logs {
     padding: 0px;
     margin: 0px;
-    height: 70vh;
+    height: 78vh;
 }
 
 .action-sheet {
     padding: 0px;
     margin: 0px;
-    height: 70vh;
+    height: 78vh;
 }
 
 .gameheader {
     padding: 0px;
     margin: 0px;
-    height: 0vh;
+    height: 20vh;
 }
 
 .board {
@@ -21,12 +21,16 @@
     margin: 0px;
 }
 
+.actionmenu {
+    width: 8vw;
+}
+
 .gamelog {
     padding: 0px;
     padding-left: 10px;
     margin: 0px;
     margin-left: 10px;
-    height: 22vh;
+    height: 15vh;
     overflow-y: scroll;
     border: 1px solid black;
 }
@@ -35,7 +39,7 @@
     padding: 0px;
     padding-left: 10px;
     margin: 0px;
-    height: 22vh;
+    height: 15vh;
     overflow-y: scroll;
     border: 1px solid black;
 }

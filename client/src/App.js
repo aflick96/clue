@@ -69,7 +69,7 @@ const App = () => {
     <div>
       {
         playersReady ? (
-          <Grid container style={{height: '100vh', margin: '0px', padding: '0px'}}> 
+          <Grid container style={{height: '100vh', width: '100vw', margin: '0px', padding: '0px'}}> 
             <GameHeader users={usersInLobby} user={user}/>
             <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user}/>
           </Grid>
