@@ -31,20 +31,22 @@ const GameHeader = ({
 
     return(
         <Grid container className='gameheader'>
-            <Grid item sm={8} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                <h1 className='title'>Clue-less</h1>
-                <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0px', marginRight: '30px'}}>
-                    <p className='user-name'>{userName}</p>
-                    <Card image_name={userCharacter} className={'header-user-character'}/>
-                </Grid>
-            </Grid>
             {
-                userItem1 && userItem2 && userItem3 ?             
+                userItem1 && userItem2 && userItem3 ?
+                <>
+                    <Grid item sm={8} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <h1 className='title'>Clue-less</h1>
+                        <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0px', marginRight: '30px'}}>
+                            <p className='user-name'>{userName}</p>
+                            <Card image_name={userCharacter} className={'header-user-character'}/>
+                        </Grid>
+                    </Grid>             
                     <Grid item sm={4} className='user-information'>
                         <Card image_name={userItem1} className={'header-game-cards'}/>
                         <Card image_name={userItem2} className={'header-game-cards'}/>
                         <Card image_name={userItem3} className={'header-game-cards'}/>
                     </Grid>
+                </>
             :
                 <></>
             }
