@@ -34,3 +34,14 @@
     color: white;
     margin: 0px;
 }
+
+.no-card-shown {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    font-size: 20px;
+    font-weight: bold;
+    color: #595959;
+}

@@ -14,7 +14,9 @@ const SuggestionLog = ({ suggestions }) => {
                     {
                         suggestion.shown ? (
                             <Card image_name={suggestion.shown} className={'suggestionlog-message-shown'}/>
-                        ) : (<></>)
+                        ) : (
+                            <Card image_name={'No Card Shown'} className={'suggestionlog-message-shown'}/>
+                        )
                     }
                 </div>  
             )}

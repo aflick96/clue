@@ -165,8 +165,14 @@ io.on('connection', (socket) => {
 
     //Move to the next player if the current player does not have a card that matches the current suggestion
     socket.on('noCard', () => {
-        noCardCount = (noCardCount + 1) % users.length;        
-        io.emit('playerShowSelect', users[(currentTurn)], users[noCardCount], currentSuggestion);
+
+        noCardCount = (noCardCount + 1) % users.length;
+
+        if(noCardCount === currentTurn){
+            console.log('reached user');
+        } else {
+            io.emit('playerShowSelect', users[(currentTurn)], users[noCardCount], currentSuggestion);
+        }
     });
     //
 

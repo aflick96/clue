@@ -32,7 +32,7 @@ const GameHeader = ({
 
         //Displays a message when it's the current player's turn
         setShowYourTurnMessage(notification);
-        setTimeout(() => { setShowYourTurnMessage(false);}, 2000);
+        setTimeout(() => { setShowYourTurnMessage(false);}, 4000);
         //
 
     }, [users, user, notification]);
