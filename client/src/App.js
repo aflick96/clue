@@ -13,8 +13,8 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [usersInLobby, setUsersInLobby] = useState([]);
   const [availableCharacters, setAvailableCharacters] = useState([]);
-  // const availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
   const [playersReady, setPlayersReady] = useState(false);
+  const [playerTurn, setPlayerTurn] = useState(false);
 
   useEffect(() => {
 
@@ -59,19 +59,27 @@ const App = () => {
     }
   };
 
+  //Update the server with the current user's ready status
   const handleUserReady = () => {
     if (socket) {
       socket.emit('userReady', user);
     }
   };
+  //
+
+  //Update the player turn state --> this is used to display the current player's turn in the header
+  const handlePlayerTurn = (res) => {
+    setPlayerTurn(res);
+  };
+  //
 
   return (
     <div>
       {
         playersReady ? (
           <Grid container style={{height: '100vh', width: '100vw', margin: '0px', padding: '0px'}}> 
-            <GameHeader users={usersInLobby} user={user}/>
-            <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user}/>
+            <GameHeader users={usersInLobby} user={user} notification={playerTurn}/>
+            <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user} playerTurn={(res) => handlePlayerTurn(res)}/>
           </Grid>
         ) : 
         !user ? (

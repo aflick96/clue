@@ -1,9 +1,9 @@
 import './Card.css';
 
-const Card = ({ image_name, className }) => {
+const Card = ({ image_name, className, onClick }) => {
     
     return(
-    <div className={`card${className === undefined ? '' : ' ' + className}`}>
+    <div className={`card${className === undefined ? '' : ' ' + className}`} onClick={onClick}>
         <div className="image-container">
             <img
                 src={require(`../../../public/game_images/${image_name}.jpg`)}

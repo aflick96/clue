@@ -3,9 +3,9 @@
 }
 
 .card.header-game-cards {
-    margin-top: 15px;
-    height: 125px;
-    width: 125px;
+    height: 75%;
+    width: 80%;
+    align-self: center;
     overflow: hidden;
 }
 
@@ -16,14 +16,42 @@
 }
 
 .user-information {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    overflow: hidden;
+    max-height: 100%;
+    overflow-y: auto;
+    background-color: rgb(229, 240, 240);
 }
 
 .user-name {
     margin: 0px;
     font-weight: bold;
+}
+
+
+@keyframes rotate-alert {
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(-10deg);
+    }
+
+    75% {
+        transform: rotate(10deg);
+    }
+}
+
+.alert-message-your-turn {
+    animation: rotate-alert 2s ease-in-out infinite;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #b7f2a8;
+    border-color: #f5c6cb;
+    color: #721c24;
+    margin-top: 20px;
+    width: 300px;
+    height: 100px;
 }

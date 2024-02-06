@@ -18,6 +18,8 @@ let users = [];
 let currentTurn = 0;
 let availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
 let playerActions = [];
+let currentSuggestion = {};
+let noCardCount = 1;
 
 const caseFile = {
     'suspect': '',
@@ -70,27 +72,16 @@ io.on('connection', (socket) => {
 
     //Update the lobby with the ready status and update the game if all users are ready to start
     socket.on('userReady', (userName) => {
-        users.forEach(user => {
-            if (user.name === userName) {
-                user.ready = true;
+                
+        const user = users.find((u) => u.name === userName);
+        if (user) { user.ready = true}; 
 
-                //Randomly assign each player three items
-                let userItems = [];
-                for (let i = 0; i < 3; i++) {
-                    const item = gameItems[Math.floor(Math.random() * gameItems.length)];
-                    userItems.push(item);
-                    gameItems.splice(gameItems.indexOf(item), 1);
-                }
-                user.items = userItems;
-                //
-                console.log(user)
-            }
-        })
         io.emit('updateLobby', users);
 
         const allReady = users.every(u => u.ready === true)
-        if(allReady && users.length > 1) {
+        if(allReady && users.length > 2) {
             addPlayerStartingPostions();
+            assignCardsToPlayers();
             io.emit('updateLobby', users);
             io.emit('allPlayersReady', true);
         }
@@ -106,6 +97,8 @@ io.on('connection', (socket) => {
     //Update the current player
     socket.on('completeTurn', () => {
         currentTurn = (currentTurn + 1) % users.length;
+        noCardCount = 1;
+        currentSuggestion = {};
         io.emit('playerTurn', users[currentTurn]);
     });
     //
@@ -121,9 +114,6 @@ io.on('connection', (socket) => {
                 users[index].position = newPosition;
             }
         });
-
-        console.log(users);
-
 
         //update the game log with the player's move
         let newMoveLogMessage = {
@@ -159,9 +149,27 @@ io.on('connection', (socket) => {
         //
 
         io.emit('updateGameLog', playerActions);
-    });
 
+        //update the current suggestion & emit the next player's turn to show the suggestion overlay
+        currentSuggestion = suggestion;
+        io.emit('playerShowSelect', users[(currentTurn)], users[(currentTurn + 1) % users.length], suggestion);
+        //
+
+    });
     
+    //Show the card that the current player has that matches the current suggestion
+    socket.on('showUserCard', (suggestor, card) => {
+        io.emit('updateSuggestionLogWithShownCard', suggestor, card);
+    });
+    //
+
+    //Move to the next player if the current player does not have a card that matches the current suggestion
+    socket.on('noCard', () => {
+        noCardCount = (noCardCount + 1) % users.length;        
+        io.emit('playerShowSelect', users[(currentTurn)], users[noCardCount], currentSuggestion);
+    });
+    //
+
     //Remove user from list if they have disconnected
     socket.on('disconnect', () => {
         console.log('Client disconnected');
@@ -210,6 +218,35 @@ const addPlayerStartingPostions = () => {
             }
         });
     });
+};
+//
+
+//Assigns all cards to the players (except the case file cards) when game starts
+const assignCardsToPlayers = () => {    
+    let leftOverCards = 18 % users.length;
+    let cardsPerUser = Math.floor(18/users.length);
+
+
+    users.forEach(user => {
+        
+        let userItems = [];    
+        
+        if (leftOverCards === 0){
+            for (let i = 0; i < cardsPerUser; i++) {
+                const item = gameItems[Math.floor(Math.random() * gameItems.length)];
+                userItems.push(item);
+                gameItems.splice(gameItems.indexOf(item), 1);
+            }    
+        } else {
+            for (let i = 0; i < cardsPerUser + 1; i++) {
+                const item = gameItems[Math.floor(Math.random() * gameItems.length)];
+                userItems.push(item);
+                gameItems.splice(gameItems.indexOf(item), 1);
+            }
+            leftOverCards -= 1;                
+        }
+        user.items = userItems;
+    })
 };
 //
 

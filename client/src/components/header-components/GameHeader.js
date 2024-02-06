@@ -5,46 +5,78 @@ import './GameHeader.css';
 
 const GameHeader = ({
     users,
-    user
+    user,
+    notification
 }) => {
     
-    //Set's the current player's name, character, and items to be displayed in the header
     const [userName, setUserName] = useState();
     const [userCharacter, setUserCharacter] = useState();
-    const [userItem1, setUserItem1] = useState();
-    const [userItem2, setUserItem2] = useState();
-    const [userItem3, setUserItem3] = useState();
+    const [itemsRendered, setItemsRendered] = useState(false);
+    const [userItems, setUserItems] = useState();
+    const [showYourTurnMessage, setShowYourTurnMessage] = useState(false);
 
     useEffect(() => {
+        
+        //Sets the current player's name, character, and items to be displayed in the header
         users.forEach((u) => {
             if(u.name === user) {
                 setUserName(u.name);
                 setUserCharacter(u.character);
-                setUserItem1(u.items[0]);
-                setUserItem2(u.items[1]);
-                setUserItem3(u.items[2]);
+                if(u.items.length !== 0) {
+                    setItemsRendered(true);
+                    setUserItems(u.items);
+                }
             }
         })
-    }, [users, user]);
-    //
+        //
 
+        //Displays a message when it's the current player's turn
+        setShowYourTurnMessage(notification);
+        setTimeout(() => { setShowYourTurnMessage(false);}, 2000);
+        //
+
+    }, [users, user, notification]);
+    
+
+    //Chunks the user's items into groups of 3 to be displayed in the header
+    const chunkArray = (arr, chunkSize) => {
+        const chunkedArray = [];
+        for (let i = 0; i < arr.length; i += chunkSize) {
+            chunkedArray.push(arr.slice(i, i + chunkSize));
+        }
+        return chunkedArray;
+    };
+    //
 
     return(
         <Grid container className='gameheader'>
             {
-                userItem1 && userItem2 && userItem3 ?
+                itemsRendered ?
                 <>
                     <Grid item sm={8} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
                         <h1 className='title'>Clue-less</h1>
-                        <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0px', marginRight: '30px'}}>
+                        {
+                            showYourTurnMessage && (
+                                <div className='alert-message-your-turn'>It's your turn!</div>
+                            )
+                        }
+                        <Grid sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0px', marginRight: '100px'}}>
                             <p className='user-name'>{userName}</p>
                             <Card image_name={userCharacter} className={'header-user-character'}/>
                         </Grid>
                     </Grid>             
                     <Grid item sm={4} className='user-information'>
-                        <Card image_name={userItem1} className={'header-game-cards'}/>
-                        <Card image_name={userItem2} className={'header-game-cards'}/>
-                        <Card image_name={userItem3} className={'header-game-cards'}/>
+                        <Grid container justifyContent="center">
+                            {chunkArray(userItems, 3).map((rowItems, rowIndex) => (
+                            <Grid container key={rowIndex} justifyContent="center">
+                                {rowItems.map((item, index) => (
+                                <Grid item xs={4} key={index} display="flex" justifyContent="center" alignItems="center">
+                                    <Card image_name={item} className={'header-game-cards'} />
+                                </Grid>
+                                ))}
+                            </Grid>
+                            ))}
+                        </Grid>
                     </Grid>
                 </>
             :
