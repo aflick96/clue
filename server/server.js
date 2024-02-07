@@ -12,6 +12,8 @@ const io = new Server(server, {
   }
 });
 
+console.log(path.join(__dirname, '..', 'client', 'build'));
+
 app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
 app.get('*', function(req, res) {
