@@ -6,7 +6,9 @@ import Game from './components/game-components/Game';
 import GameHeader from './components/header-components/GameHeader';
 import Grid from '@mui/material/Grid';
 
-const ENDPOINT = "http://127.0.0.1:5000";
+// const ENDPOINT = "http://127.0.0.1:5000";
+
+const ENDPOINT = process.env.REACT_APP_SOCKET_ENDPOINT || window.location.origin;
 
 const App = () => {
   const [socket, setSocket] = useState(null);
@@ -19,7 +21,7 @@ const App = () => {
   useEffect(() => {
 
     //Create new client socket & update state
-    const clientSocket = socketIOClient(ENDPOINT);
+    const clientSocket = socketIOClient(ENDPOINT, { path: '/socket.io' });
     setSocket(clientSocket);
     //
 
