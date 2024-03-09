@@ -16,7 +16,7 @@ const ShowCardOnOverlay = (
                             if (item === currentSuggestion.character || item === currentSuggestion.room || item === currentSuggestion.weapon){
                                 cardFound = true;
                                 return(
-                                    <Card image_name={item} className="overlay-suggestion" onClick={() => updatePlayerSuggestionLogWithShownCard(item)}/>
+                                    <Card image_name={item} className="overlay-suggestion" onClick={() => updatePlayerSuggestionLogWithShownCard(item, localPlayerName)}/>
                                 );
                             }
                             return null;
@@ -25,7 +25,7 @@ const ShowCardOnOverlay = (
                     return null;
                 });
                 if (!cardFound) {
-                    return <button className="no-card-button" onClick={noCard}>No Card</button>
+                    return <button className="no-card-button" onClick={() => noCard(localPlayerName)}>No Card</button>
                 } else {
                     return cards;
                 }

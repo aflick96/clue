@@ -74,6 +74,8 @@
     height: 100%;
     background-color: rgba(0, 0, 0, 0.85);
     z-index: 9999;
+    justify-content: center;
+    align-items: center;
 }
 
 #cards {
@@ -107,5 +109,105 @@
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
+    cursor: pointer;
+}
+
+.accusation-ensure {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.accusation-ensure-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.accusation-ensure-button-container>button {
+    height: 50px;
+    width: 100px;
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.691);
+    background-color: grey;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.accusation-ensure>p {
+    font-size: 16px;
+    text-align: center;
+    margin: 0px;
+}
+
+.accusation-result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.accusation-result-failure {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}
+
+.accusation-result-failure #header {
+    font-size: 24px;
+    text-align: center;
+    margin: 0px;
+}
+
+.accusation-result-failure>p {
+    font-size: 16px;
+    text-align: center;
+    margin: 0px;
+}
+
+.accusation-result-success {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+}
+
+.accusation-result-success #header {
+    font-size: 24px;
+    text-align: center;
+    margin: 0px;
+}
+
+.accusation-result-success>p {
+    margin: 0px;
+}
+
+#header img {
+    height: 50%;
+    width: 50%;
+}
+
+.play-again {
+    height: 50px;
+    width: 200px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.691);
+    background-color: grey;
+    padding: 10px 20px;
+    text-align: center;
+    border-radius: 20px;
     cursor: pointer;
 }

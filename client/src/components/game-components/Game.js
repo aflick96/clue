@@ -5,10 +5,11 @@ import ActionMenu from './ActionMenu';
 import GameLog from '../messaging-components/GameLog';
 import SuggestionLog from '../messaging-components/SuggestionLog';
 import ShowCardOnOverlay from '../overlay-components/ShowCardOnOverlay';
+import AccusationResult from '../overlay-components/AccusationResult';
 import './Game.css';
 import Grid from '@mui/material/Grid';
 
-const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
+const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn, playAgain }) => {
     const [p, setP] = useState({});
     const [players, setPlayers] = useState([]);
     const isCurrentPlayer = p.name === localPlayerName;
@@ -16,7 +17,9 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
     const [suggestionLogMessages, setSuggestionLogMessages] = useState([]);
     const [showOverlay, setShowOverlay] = useState(false);
     const [currentSuggestion, setCurrentSuggestion] = useState({});
-    
+    const [accusation, setAccusation] = useState({});
+    const [showOverlayAccusationResult, setShowOverlayAccusationResult] = useState(false);
+
     useEffect(() => {
         socket.emit('setup');
     }, [socket, localPlayerName])
@@ -68,6 +71,18 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
         });
         //
 
+        socket.on('userGameResult', (res, accusation) => {                        
+            document.getElementById('overlay').style.display = 'flex';
+            setAccusation(accusation);
+            setShowOverlayAccusationResult(true);
+            if(!res) {
+                setTimeout(() => {
+                    setShowOverlayAccusationResult(false);
+                    document.getElementById('overlay').style.display = 'none';
+                }, 10000);    
+            }
+        });
+
         //Remove user from list if they have disconnected
         return () => {
             socket.off('firstRender');
@@ -76,10 +91,11 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
             socket.off('updateGameLog');
             socket.off('playerShowSelect');
             socket.off('updateSuggestionLogWithShownCard');
+            socket.off('userGameResult');
         };
         //
 
-    }, [socket, gameLogMessages, localPlayerName, playerTurn, suggestionLogMessages]);
+    }, [socket, gameLogMessages, localPlayerName, playerTurn, suggestionLogMessages, accusation]);
 
     //Handles the end of the player's turn. Emits a socket event to the server to update the current player.
     const handleTurnEnd = () => {
@@ -94,18 +110,20 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
     //
 
     //Handles the case where the current player has a card that matches the current suggestion
-    const updatePlayerSuggestionLogWithShownCard = (card) => {
+    const updatePlayerSuggestionLogWithShownCard = (card, shower) => {
         socket.emit('showUserCard', p.name, card);
         document.getElementById('overlay').style.display = 'none';
         setCurrentSuggestion({});
+        socket.emit('cardShownResult', shower, true);
     }
     //
 
     //Handles the case where the current player does not have a card that matches the current suggestion
-    const noCard = () => {
+    const noCard = (shower) => {
         socket.emit('noCard');
         document.getElementById('overlay').style.display = 'none';
         setCurrentSuggestion({});
+        socket.emit('cardShownResult', shower, false);
     };
     //
 
@@ -141,9 +159,14 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn }) => {
                 </Grid>
                 <div id="overlay" style={{display: 'none'}}>
                     { 
-                        showOverlay ? (
+                        showOverlay && (
                             <ShowCardOnOverlay players={players} localPlayerName={localPlayerName} currentSuggestion={currentSuggestion} updatePlayerSuggestionLogWithShownCard={updatePlayerSuggestionLogWithShownCard} noCard={noCard}/>
-                        ) : ( <></> )
+                        )
+                    }
+                    {
+                        showOverlayAccusationResult && (
+                            <AccusationResult accusation={accusation} playAgain={playAgain}/>
+                        )
                     }
                 </div>
                 </>

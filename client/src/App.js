@@ -73,13 +73,18 @@ const App = () => {
   };
   //
 
+  //This needs work
+  const handlePlayAgain = () => {
+    socket.emit('resetGame');
+  };
+
   return (
     <div>
       {
         playersReady ? (
           <Grid container style={{height: '100vh', width: '100vw', margin: '0px', padding: '0px'}}> 
             <GameHeader users={usersInLobby} user={user} notification={playerTurn}/>
-            <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user} playerTurn={(res) => handlePlayerTurn(res)}/>
+            <Game hasGameStarted={playersReady} socket={socket} localPlayerName={user} playerTurn={(res) => handlePlayerTurn(res)} playAgain={handlePlayAgain}/>
           </Grid>
         ) : 
         !user ? (

@@ -21,14 +21,14 @@ let playerActions = [];
 let currentSuggestion = {};
 let noCardCount = 1;
 
-const caseFile = {
+let caseFile = {
     'suspect': '',
     'weapon': '',
     'room': ''
 };
 
 //List of all game items -> use this to randomly assign each player three items.
-const gameItems = 
+let gameItems = 
     ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White",
     "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench",
     "Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"
@@ -156,6 +156,31 @@ io.on('connection', (socket) => {
         //
 
     });
+
+    socket.on('cardShownResult', (player, card) => {
+        let cardResultLogMessage = {
+            message: card ? ` ${player} was unable to disprove the suggestion` : `${player} disproved the suggestion`,
+            timestamp: new Date().toLocaleTimeString()
+        };
+
+        let exists = playerActions.some(action => action.message === cardResultLogMessage.message && action.timestamp === cardResultLogMessage.timestamp);
+
+        if (!exists) {
+            playerActions.unshift(cardResultLogMessage);
+        }
+
+        io.emit('updateGameLog', playerActions);
+    })
+
+    socket.on('makeAccusation', (accusation) => {
+        if (accusation.character === caseFile.suspect && accusation.weapon === caseFile.weapon && accusation.room === caseFile.room) {
+            accusation.result = true;
+            io.emit('userGameResult', true, accusation);
+        } else {
+            accusation.result = false;
+            io.emit('userGameResult', false, accusation);
+        }
+    });
     
     //Show the card that the current player has that matches the current suggestion
     socket.on('showUserCard', (suggestor, card) => {
@@ -200,6 +225,21 @@ io.on('connection', (socket) => {
     });
     //
 
+    //This needs work
+    socket.on('resetGame', () => {
+        users = [];
+        currentTurn = 0;
+        availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
+        gameItems = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White",
+        "Candlestick", "Dagger", "Lead Pipe", "Revolver", "Rope", "Wrench",
+        "Ballroom", "Billiard Room", "Conservatory", "Dining Room", "Hall", "Kitchen", "Library", "Lounge", "Study"
+        ]
+        playerActions = [];
+        currentSuggestion = {};
+        noCardCount = 1;
+        buildCaseFile();
+        io.emit('resetGame');
+    });
 });
 
 const PORT = process.env.PORT || 5000;

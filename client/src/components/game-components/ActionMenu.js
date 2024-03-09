@@ -1,5 +1,6 @@
 import React, { useState } from 'react';    
 import './ActionMenu.css';
+import AccusationEnsure from '../overlay-components/AccusationEnsure';
 
 const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade, endTurn }) => {
     
@@ -39,6 +40,12 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
     const [showMoveMessage, setShowMoveMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid move
     const [showSuggestMessage, setShowSuggestMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid suggestion
     const [inRoom, setInRoom] = useState(false); //state for whether the player is in a room --> locks the suggestion dropdowns and suggest button until the player ends their turn
+    const [accuseMade, setAccuseMade] = useState(false); //state for whether an accusation has been made --> locks the accusation dropdowns and accuse button until the player ends their turn
+    const [accuseClicked, setAccuseClicked] = useState(false); //state for whether the player has clicked the accuse button
+    const [showAccuseMessage, setShowAccuseMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid accusation
+    const [accuseSuspectSelection, setAccuseSuspectSelection] = useState(''); //state for the selected accusation
+    const [accuseWeaponSelection, setAccuseWeaponSelection] = useState(''); //state for the selected accusation
+    const [accuseRoomSelection, setAccuseRoomSelection] = useState(''); //state for the selected accusation
 
     //Update the selected move when the user selects a move from the dropdown
     const handleMoveSelection = (event) => {
@@ -109,6 +116,50 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
         //
     };
 
+    const handleSuspectAccusationSelection = (event) => {
+        setAccuseSuspectSelection(event.target.value);
+    };
+
+    const handleWeaponAccusationSelection = (event) => {
+        setAccuseWeaponSelection(event.target.value);
+    };
+
+    const handleRoomAccusationSelection = (event) => {
+        setAccuseRoomSelection(event.target.value);
+    };
+
+    const handleAccuseButtonClick = () => {
+        if(accuseSuspectSelection === '--' ||
+            accuseSuspectSelection === '' ||
+            accuseWeaponSelection === '--' ||
+            accuseWeaponSelection === '' ||
+            accuseRoomSelection === '--' ||
+            accuseRoomSelection === ''
+        ) {
+            setShowAccuseMessage(true);
+            setTimeout(() => setShowAccuseMessage(false), 2000);
+        }
+        else {
+            //Display a yes/no modal to confirm the accusation
+            //setAccuseMade(true);
+            //socket.emit('accusationClicked', {user: currentPlayer, character: accuseSuspectSelection, weapon: accuseWeaponSelection, room: accuseRoomSelection});
+            setAccuseClicked(true);
+        }
+        
+    };
+
+    const handleAccuseButtonConfirm = (res) => {
+        if(res) {
+            socket.emit('makeAccusation', {user: currentPlayer, character: accuseSuspectSelection, weapon: accuseWeaponSelection, room: accuseRoomSelection});
+            setAccuseMade(true);
+        } else {
+            setAccuseSuspectSelection('--');
+            setAccuseWeaponSelection('--');
+            setAccuseRoomSelection('--');
+        }
+        setAccuseClicked(false);
+    };
+
     //Resets the state values to nothing when the player ends their turn
     const handleEndTurnButtonClick = () => {
         setMoveSelection('--');
@@ -121,6 +172,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
     //
 
     return (
+        <>
         <div className="actionmenu">
             <div className="currentplayer">
                 <p className='label'>Current Player</p>
@@ -137,7 +189,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                     </div>
                 )}
 
-                <select onChange={handleMoveSelection} value={moveSelection} disabled={isDisabled || moveMade}>
+                <select onChange={handleMoveSelection} value={moveSelection} disabled={isDisabled || moveMade || accuseMade}>
                     <option value="--">--</option>
                     {possibleMovements[currentPlayer.position] && possibleMovements[currentPlayer.position].map((position, index) => {
                         const isPositionOccupied = players.some(player => player.position === position);
@@ -153,7 +205,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                     })}
                 </select>
                 <br/>
-                <button className='button' onClick={handleGoButtonClick} disabled={isDisabled || moveMade}>Go</button>
+                <button className='button' onClick={handleGoButtonClick} disabled={isDisabled || moveMade || accuseMade}>Go</button>
             </div>
             <div className='suggest'>
                 <p className='label-lvl-1'>Suggest</p>
@@ -165,50 +217,67 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                     </div>
                 )}
 
-                <select onChange={handleSuspectSuggestionSelection} value={suggestionSuspectSelection} disabled={isDisabled || suggestMade || !inRoom}>
+                <select onChange={handleSuspectSuggestionSelection} value={suggestionSuspectSelection} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>
                     <option value="--">--</option>
                     {characters.map((character, index) =>
                         <option>{character}</option>
                     )}
                 </select>
                 <p className='label-lvl-2'>Weapon</p>
-                <select onChange={handleWeaponSuggestionSelection} value={suggestionWeaponSelection} disabled={isDisabled || suggestMade || !inRoom}>
+                <select onChange={handleWeaponSuggestionSelection} value={suggestionWeaponSelection} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>
                     <option value="--">--</option>
                     {weapons.map((weapon, index) =>
                         <option>{weapon}</option>
                     )}
                 </select>
                 <br/>
-                <button className='button' onClick={handleSuggestButtonClick} disabled={isDisabled || suggestMade || !inRoom}>Suggest</button>
+                <button className='button' onClick={handleSuggestButtonClick} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>Suggest</button>
             </div>
             <div className="accuse">
                 <p className='label'>Accuse</p>
+
+                {showAccuseMessage && (
+                    <div className='alert-message'>
+                        Please ensure you have selected a valid Suspect, Weapon, and Room.
+                    </div>
+                )}
+
                 <p className='label-lvl-2'>Suspect</p>
-                <select disabled={isDisabled}>
-                    <option value="">--</option>
+                <select onChange={handleSuspectAccusationSelection} disabled={isDisabled || accuseMade}>
+                    <option value="--">--</option>
                     {characters.map((character, index) =>
                         <option>{character}</option>
                     )};
                 </select>
+
                 <p className='label-lvl-2'>Weapon</p>
-                <select disabled={isDisabled}>
-                    <option value="">--</option>
+                <select onChange={handleWeaponAccusationSelection} disabled={isDisabled || accuseMade}>
+                    <option value="--">--</option>
                     {weapons.map((weapon, index) => 
                         <option>{weapon}</option>
                     )}
                 </select>
+
                 <p className='label-lvl-2'>Room</p>
-                <select disabled={isDisabled}>
-                    <option value="">--</option>
+                <select onChange={handleRoomAccusationSelection} disabled={isDisabled || accuseMade}>
+                    <option value="--">--</option>
                     {rooms.map((room, index) =>
                         <option>{room}</option>
                     )}
                 </select>
                 <br/>
-                <button className='button' disabled={isDisabled}>Accuse</button>
+                <button className='button' onClick={handleAccuseButtonClick} disabled={isDisabled || accuseMade}>Accuse</button>
             </div>
             <button className='button' onClick={handleEndTurnButtonClick} disabled={isDisabled}>End Turn</button>
         </div>
+        {
+            accuseClicked && (
+                <div id="overlay" style={{display: 'flex'}}>
+                    <AccusationEnsure onYes={(res) => handleAccuseButtonConfirm(res)} onNo={(res) => handleAccuseButtonConfirm(res)}/>
+                </div>
+            )
+        }
+        </>
     );
 };
 
