@@ -15,70 +15,115 @@ app.use(cors());
 
 //Store the joined users on the server side --> array of objects {name, character, ready}
 let users = [];
-let currentTurn = 0;
+let readyStatus = [];
+let playerMoveRequest = [];
+let playerCompleteRequest = [];
+let suggestionRequest = [];
+let showCardRequest = [];
+let noCardRequest = [];
+let accusationRequest = [];
+let whoWonRequest = false;
+let resetGameRequest = false;
+let userWinner = null;
 
 io.on('connection', (socket) => {
-    console.log('New client connected');
 
-    //Actions when the user submits the form
-    socket.on('joinLobby', (data) => {
-        if(users.length < 6){
-            socket.name = data.name; //store socket name to identify the user
-            users.push(data);
+    //1. Show that a client connected to the server when the React app spins up
+    console.log(`Client connected to server with id: ${socket.id}`);
+
+    //2. Show that the client requested the characters list
+    socket.on('getCharacters', () => {
+        const characters = [
+            { name: 'Miss Scarlet', color: 'red' },
+            { name: 'Col. Mustard', color: 'yellow' },
+            { name: 'Mrs. White', color: 'white' },
+            { name: 'Mr. Green', color: 'green' },
+            { name: 'Mrs. Peacock', color: 'blue' },
+            { name: 'Prof. Plum', color: 'purple' },
+        ]
+
+        console.log('broadcasting characters to clients');
+        io.emit('getCharacters', characters);
+    });
+
+    //3. Show that the client requested to join the lobby
+    socket.on('joinLobby', () => {
+            io.emit('joinLobby', socket.id);
+            users.push(socket.id);
+            console.log('broadcasting clients in lobby');
             io.emit('updateLobby', users);  
-        } else {
-            console.log('lobby is full');
-        }
     });
-    //
-
-    //Update the lobby with the ready status and update the game if all users are ready to start
-    socket.on('userReady', (userName) => {
-        users.forEach(user => {
-            if (user.name === userName) {
-                user.ready = true;
-            }
-        })
-        io.emit('updateLobby', users);
-
-        const allReady = users.every(u => u.ready === true)
-        if(allReady && users.length > 1) {
-            addPlayerStartingPostions();
-            io.emit('updateLobby', users);
-            io.emit('allPlayersReady', true);
-        }
-    });
-    //
-
-    //Set the players state to the list of players in the lobby
-    socket.on('setup', (playerName) => {
-        io.emit('firstRender', users);
-        io.emit('playerTurn', users[currentTurn]);
-    });
-
-    //Update the current player
-    socket.on('completeTurn', () => {
-        currentTurn = (currentTurn + 1) % users.length;
-        io.emit('playerTurn', users[currentTurn]);
-    });
-    //
-
-    //Update the position when a player has moved
-    socket.on('updatePlayerPosition', (player, newPosition) => {
-        users.forEach((user, index) => {
-            if (user.name === player.name) {
-                users[index].position = newPosition;
-            }
-        });
-        io.emit('playersUpdated', users);
-        console.log(users);
-    });
-    //
     
+
+    //4. Update the lobby with the ready status and update the game if all users are ready to start
+    socket.on('userReady', (user) => {
+        if(!readyStatus.includes(user)){
+            readyStatus.push(user);
+            console.log('broadcasting ready statuses to all clients');
+            io.emit('updateReady', readyStatus);    
+        }
+    });
+    //
+
+    //5. Update the position when a player has moved 
+    socket.on('updatePlayerPosition', (user) => {
+        playerMoveRequest.push(user);
+        console.log('broadcasting movement requests to all clients');
+        io.emit('updatePlayerPosition', playerMoveRequest);
+    })
+
+
+    //6. Update the position when a player has completed their turn
+    socket.on('completeTurn', (user) => {
+        playerCompleteRequest.push(user);
+        console.log('broadcasting turn completion requests to all clients');
+        io.emit('completeTurn', playerCompleteRequest);
+    });
+
+
+    socket.on('makeSuggestion', (user) => {
+        suggestionRequest.push(user);
+        console.log('broadcasting suggestion requests to all clients');
+        io.emit('makeSuggestion', suggestionRequest);
+    });
+
+    socket.on('showCard', (user) => {
+        showCardRequest.push(user);
+        console.log('broadcasting show card requests to all clients');
+        io.emit('showCard', showCardRequest);
+    });
+
+    socket.on('noCard', (user) => {
+        noCardRequest.push(user);
+        console.log('broadcasting no card requests to all clients');
+        io.emit('noCard', noCardRequest);
+    });
+
+    socket.on('makeAccusation', (user) => {
+        accusationRequest.push(user);
+        console.log('broadcasting accusation requests to all clients');
+        io.emit('makeAccusation', accusationRequest);
+    });
+
+    socket.on('whoWon', () => {
+        whoWonRequest = true;
+        userWinner = users[Math.floor(Math.random() * (users.length))];
+        console.log('broadcasting who won to all clients');
+        io.emit('whoWon', users[Math.floor(Math.random() * (users.length))]);
+    });
+    
+    socket.on('resetGame', () => {
+        resetGameRequest = true;
+        console.log('broadcasting reset game to all clients');
+        io.emit('resetGame', resetGameRequest);
+    });
+
+
     //Remove user from list if they have disconnected
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
-        users = users.filter(u => u.name !== socket.name)
+        console.log(`Client disconnected with id: ${socket.id}`);
+        users = users.filter(u => u !== socket.id);
+        readyStatus = readyStatus.filter(u => u !== socket.id);
         io.emit('updateLobby', users);
     });
     //
@@ -87,25 +132,3 @@ io.on('connection', (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-//Add starting positions to the users array based on their character
-const addPlayerStartingPostions = () => {
-    const startingPositions = [
-        { name: 'Miss Scarlet', color: 'red', position: 'hallway-hall-lounge' },
-        { name: 'Col. Mustard', color: 'yellow', position: 'hallway-lounge-dining' },
-        { name: 'Mrs. White', color: 'white', position: 'hallway-ballroom-kitchen' },
-        { name: 'Mr. Green', color: 'green', position: 'hallway-conservatory-ballroom' },
-        { name: 'Mrs. Peacock', color:'blue', position: 'hallway-library-conservatory' },
-        { name: 'Prof. Plum', color: 'purple', position: 'hallway-study-library' },        
-    ]
-
-    users.map(user => {
-        startingPositions.map(startingPosition => {
-            if (user.character === startingPosition.name) {
-                user.position = startingPosition.position;
-                user.color = startingPosition.color;
-            }
-        });
-    });
-};
-//
