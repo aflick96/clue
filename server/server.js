@@ -97,7 +97,7 @@ io.on('connection', (socket) => {
     //Update the current player
     socket.on('completeTurn', () => {
         currentTurn = (currentTurn + 1) % users.length;
-        noCardCount = 1;
+        noCardCount = (currentTurn + 1) % users.length;
         currentSuggestion = {};
         io.emit('playerTurn', users[currentTurn]);
     });
@@ -116,15 +116,17 @@ io.on('connection', (socket) => {
         });
 
         //update the game log with the player's move
-        let newMoveLogMessage = {
-            message: player.character + '(' + player.name + ')' + ' moved from ' + pos + ' to ' + newPosition, 
-            timestamp: new Date().toLocaleTimeString()
-        };
-
-        let exists = playerActions.some(action => action.message === newMoveLogMessage.message && action.timestamp === newMoveLogMessage.timestamp);
-
-        if (!exists) { 
-            playerActions.unshift(newMoveLogMessage);
+        if(pos !== newPosition){
+            let newMoveLogMessage = {
+                message: player.character + '(' + player.name + ')' + ' moved from ' + pos + ' to ' + newPosition, 
+                timestamp: new Date().toLocaleTimeString()
+            };
+    
+            let exists = playerActions.some(action => action.message === newMoveLogMessage.message && action.timestamp === newMoveLogMessage.timestamp);
+    
+            if (!exists) { 
+                playerActions.unshift(newMoveLogMessage);
+            }    
         }
         //
         
@@ -190,9 +192,7 @@ io.on('connection', (socket) => {
 
     //Move to the next player if the current player does not have a card that matches the current suggestion
     socket.on('noCard', () => {
-
         noCardCount = (noCardCount + 1) % users.length;
-
         if(noCardCount === currentTurn){
             console.log('reached user');
         } else {
