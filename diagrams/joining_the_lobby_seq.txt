@@ -1,0 +1,25 @@
+@startuml
+
+title Player Joining the Lobby
+
+participant Active_Client
+participant Server
+participant All_Clients
+
+note right of All_Clients
+	All_Clients includes
+	the Active_Client
+end note
+
+Active_Client -> Server: connectionEstablished
+Active_Client -> Server: getUsers
+Server --> Active_Client: users
+Active_Client -> Active_Client: setUser()
+Active_Client -> Server: joinLobby
+Server -> All_Clients: updateLobby
+All_Clients -> All_Clients: setAvailableCharacters()
+Active_Client -> Server: characterSelected
+Server -> Server: update available characters
+Server -> All_Clients: charactersUpdated
+
+@enduml

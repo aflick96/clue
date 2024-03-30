@@ -1,0 +1,34 @@
+@startuml
+
+title Player Makes an Accusation
+
+participant Active_Client
+participant Server
+participant All_Clients
+
+
+Active_Client -> Active_Client: validateAccusation 
+
+note left
+	This diagram shows what happens when a 
+	player makes an accusation. If it is 
+	correct, the game ends and all players
+	are notified. If it is incorrect, all 
+	players are still notified but play
+	continues.
+end note
+
+Active_Client -> Active_Client: confirmAccusation
+Active_Client -> Server: makeAccusation
+
+Server -> All_Clients: notify of accusation
+
+alt accusation is correct
+	All_Clients -> All_Clients: display correct accusation and winning player
+
+else
+	All_Clients -> All_Clients: display losing player name
+	Server -> Active_Client: inactive
+end
+
+@enduml

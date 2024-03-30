@@ -1,0 +1,63 @@
+@startuml
+
+title Clue-less Class Diagram
+
+Client "1" *-- ActionMenu
+Client "1" *-- Game
+Server -- Client
+
+class Server
+{
+	users
+	currentTurn
+	availableCharacters
+	playerActions
+	currentSuggestion
+	noCardCount
+	caseFile
+	gameItems
+
+	notifyClients()
+	respondToClient()
+	notifySingleClient()
+}
+
+class Game
+{
+	isCurrentPlayer
+	gameLogMessages
+	suggestionLogMessages
+	currentSuggestion
+	accusation
+	display()
+	notifyServer()
+}
+
+class Client
+{
+	user
+	usersInLobby
+	availableCharacters
+	playersReady
+	playerTurn
+	display()
+	notifyServer()
+}
+
+class ActionMenu
+{
+	possibleMovements
+	characters
+	weapons
+	rooms
+	moveSelection
+	suggestionSelections
+	moveMade
+	suggestionMade	
+	display()
+	handleButtonClick()
+	notifyServer()
+}
+
+
+@enduml

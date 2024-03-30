@@ -1,0 +1,59 @@
+@startuml
+
+title Player Taking a Turn
+
+participant Active_Client
+participant Server
+participant All_Clients
+participant Client_A
+
+Server -> Active_Client: playerTurn
+note left
+	This diagram shows a player turn
+	where the player moves into a room
+	and makes a suggestion, then all
+	other clients are queried for cards
+	in order until one is found that 
+	disproves the suggestion
+end note
+Active_Client -> Server: updatePlayerPosition
+Server -> All_Clients: playersUpdated
+note right
+	This call to all clients
+	provides them with the updated
+	player list and locations so
+	that the game can be rendered
+	properly.
+end note
+Server -> All_Clients: updateGameLog
+
+Active_Client -> Active_Client: validate suggestion
+Active_Client -> Server: makeSuggestion
+Server -> All_Clients: updateGameLog
+
+Server -> Client_A : playerShowSelect
+note right
+	Client_A is part of All_Clients,
+	but is also shown separately here
+	to show that only one client is
+	queried to show a card at a time.
+end note
+
+Client_A -> Server: showUserCard
+Server -> Active_Client: updateSuggestionLogWithShownCard
+Active_Client -> Active_Client: display card in log
+
+Active_Client -> Active_Client: find player in suggestion\nand update position
+Active_Client -> Server: updatePlayerPosition
+
+Active_Client -> Server: completeTurn
+Server -> Client_A: playerTurn
+note right
+	The server notifies the next
+	client that it is their turn,
+	which for simplicity is Client_A
+	in this example
+end note
+
+
+@enduml

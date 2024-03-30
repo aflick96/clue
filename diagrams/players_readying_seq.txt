@@ -1,0 +1,33 @@
+@startuml
+
+title Users in Lobby Readying
+
+participant Client_A
+participant Client_B
+participant Client_C
+participant Server
+participant All_Clients
+
+Client_A -> Server: userReady
+note left
+	This diagram shows a series
+	of three clients readying in
+	no particular order. Once all
+	are ready to play, the server
+	notifies all clients and the
+	game can begin.
+end note
+Server -> All_Clients: updateLobby
+Server -> Server: check if all clients ready
+Client_C -> Server: userReady
+Server -> All_Clients: updateLobby
+Server -> Server: check if all clients ready
+Client_B -> Server: userReady
+Server -> All_Clients: updateLobby
+Server -> Server: check if all clients ready
+alt All Clients Ready
+Server -> All_Clients: updateLobby
+Server -> All_Clients: allPlayersReady
+end
+
+@enduml

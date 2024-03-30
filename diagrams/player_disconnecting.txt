@@ -1,0 +1,18 @@
+@startuml
+
+title Player Disconnecting From the Game
+
+participant Active_Client
+participant Server
+
+loop over all subscribed messages
+Active_Client -> Server : socket.off()
+end
+
+note right
+	When a client disconnects, they 
+	are unsubscribed from all socket
+	messages.
+end note
+
+@enduml

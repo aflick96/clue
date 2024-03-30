@@ -1,0 +1,62 @@
+@startuml
+
+title Blocked Player Taking a Turn
+
+participant Active_Client
+participant Server
+
+Server -> Active_Client: playerTurn
+note left
+	All turns start with the server
+	notifying the active client that
+	it is their turn. This diagram
+	shows a turn where the player is 
+	blocked and cannot move.
+end note
+
+Active_Client -> Active_Client: validate suggestion
+Active_Client -> Server: makeSuggestion
+Server -> All_Clients: updateGameLog
+
+Server -> Client_A : playerShowSelect
+note right
+	Client_A, Client_B, and Client_C 
+	are all part of All_Clients,
+	but are also shown separately here
+	to show that only one client is
+	queried to show a card at a time.
+end note
+
+Client_A -> Server: noCard
+Server -> Client_B : playerShowSelect
+note right
+	This example shows what happens
+	when all players do not have a card
+	that can disprove the suggestion
+end note
+Client_B -> Server: noCard
+Server -> Client_C : playerShowSelect
+Client_C -> Server: noCard
+
+Server -> Active_Client: noCard
+
+note left
+	Because no players had a card to
+	show, the active player is notified
+	so they can make an accusation or
+	end their turn
+end note
+
+Active_Client -> Active_Client: find player in suggestion\nand update position
+Active_Client -> Server: updatePlayerPosition
+
+Active_Client -> Server: completeTurn
+Server -> Client_A: playerTurn
+note right
+	The server notifies the next
+	client that it is their turn,
+	which for simplicity is Client_A
+	in this example
+end note
+
+@enduml
