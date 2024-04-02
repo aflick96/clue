@@ -23,10 +23,10 @@ Active_Client -> Server: makeAccusation
 
 Server -> All_Clients: notify of accusation
 
-alt accusation is correct
+alt #LightGreen Correct accusation
 	All_Clients -> All_Clients: display correct accusation and winning player
 
-else
+else #Pink Incorrect accusation
 	All_Clients -> All_Clients: display losing player name
 	Server -> Active_Client: inactive
 end

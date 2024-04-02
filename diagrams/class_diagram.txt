@@ -1,6 +1,6 @@
 @startuml
 
-title Clue-less Class Diagram
+title Clue-less Class Diagram and Specification
 
 Client "1" *-- ActionMenu
 Client "1" *-- Game
