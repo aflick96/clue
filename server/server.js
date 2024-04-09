@@ -161,7 +161,7 @@ io.on('connection', (socket) => {
 
     socket.on('cardShownResult', (player, card) => {
         let cardResultLogMessage = {
-            message: card ? ` ${player} was unable to disprove the suggestion` : `${player} disproved the suggestion`,
+            message: card ? `${player} disproved the suggestion` : ` ${player} was unable to disprove the suggestion`,
             timestamp: new Date().toLocaleTimeString()
         };
 
