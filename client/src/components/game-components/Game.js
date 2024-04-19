@@ -159,7 +159,7 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn, playAgain }
                 </Grid>
                 <div id="overlay" style={{display: 'none'}}>
                     { 
-                        showOverlay && (
+                        showOverlay && !showOverlayAccusationResult && (
                             <ShowCardOnOverlay players={players} localPlayerName={localPlayerName} currentSuggestion={currentSuggestion} updatePlayerSuggestionLogWithShownCard={updatePlayerSuggestionLogWithShownCard} noCard={noCard}/>
                         )
                     }
