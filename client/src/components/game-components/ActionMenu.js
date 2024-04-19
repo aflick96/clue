@@ -67,6 +67,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
             socket.emit('updatePlayerPosition', currentPlayer, moveSelection);
             currentPlayer.position = moveSelection;
             setMoveMade(true);
+            setSuggestMade(false);
             if (!moveSelection.includes('hallway-')) {
                 setInRoom(true);
             } else {
@@ -166,7 +167,6 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
         setMoveMade(false);
         setSuggestionSuspectSelection('--');
         setSuggestionWeaponSelection('--');
-        setSuggestMade(false);
         endTurn();
     };
     //
