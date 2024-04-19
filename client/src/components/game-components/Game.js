@@ -152,7 +152,7 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn, playAgain }
                         {isCurrentPlayer ? (
                             <ActionMenu socket={socket} currentPlayer={p} players={players} isDisabled={false} suggestionMade={updatePlayerSuggestionLog} endTurn={handleTurnEnd} />
                         ) : (
-                            <ActionMenu currentPlayer={p} players={players} isDisabled={true} />
+                            <ActionMenu socket={socket} currentPlayer={p} players={players} isDisabled={true} />
                         )}
                         <GameSheet />
                     </div>

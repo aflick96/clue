@@ -1,4 +1,4 @@
-import React, { useState } from 'react';    
+import React, { useState, useEffect } from 'react';    
 import './ActionMenu.css';
 import AccusationEnsure from '../overlay-components/AccusationEnsure';
 
@@ -37,6 +37,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
     const [suggestionWeaponSelection, setSuggestionWeaponSelection] = useState(''); //state for the selected suggestion
     const [moveMade, setMoveMade] = useState(false); //state for whether a move has been made --> locks the move dropdown and go button until the player ends their turn
     const [suggestMade, setSuggestMade] = useState(false); //state for whether a suggestion has been made --> locks the suggestion dropdowns and suggest button until the player ends their turn
+    const [suggestionDisproven, setSuggestionDisproven] = useState(false);
     const [showMoveMessage, setShowMoveMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid move
     const [showSuggestMessage, setShowSuggestMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid suggestion
     const [inRoom, setInRoom] = useState(false); //state for whether the player is in a room --> locks the suggestion dropdowns and suggest button until the player ends their turn
@@ -52,6 +53,13 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
         setMoveSelection(event.target.value);
     };
     //
+
+    useEffect(() => {
+        socket.on('suggestionDisproven', (value) => { 
+            setSuggestionDisproven(value);
+        });
+    })
+    
 
     const handleGoButtonClick = () => {
         
@@ -98,6 +106,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
             suggestionWeaponSelection === ''
         ) {
             setShowSuggestMessage(true);
+            setSuggestionDisproven(false);
             setTimeout(() => setShowSuggestMessage(false), 2000);
         } 
         //
@@ -243,7 +252,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                 )}
 
                 <p className='label-lvl-2'>Suspect</p>
-                <select onChange={handleSuspectAccusationSelection} disabled={isDisabled || accuseMade}>
+                <select onChange={handleSuspectAccusationSelection} disabled={isDisabled || suggestionDisproven || accuseMade}>
                     <option value="--">--</option>
                     {characters.map((character, index) =>
                         <option>{character}</option>
@@ -251,7 +260,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                 </select>
 
                 <p className='label-lvl-2'>Weapon</p>
-                <select onChange={handleWeaponAccusationSelection} disabled={isDisabled || accuseMade}>
+                <select onChange={handleWeaponAccusationSelection} disabled={isDisabled || suggestionDisproven || accuseMade}>
                     <option value="--">--</option>
                     {weapons.map((weapon, index) => 
                         <option>{weapon}</option>
@@ -259,14 +268,14 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                 </select>
 
                 <p className='label-lvl-2'>Room</p>
-                <select onChange={handleRoomAccusationSelection} disabled={isDisabled || accuseMade}>
+                <select onChange={handleRoomAccusationSelection} disabled={isDisabled || suggestionDisproven || accuseMade}>
                     <option value="--">--</option>
                     {rooms.map((room, index) =>
                         <option>{room}</option>
                     )}
                 </select>
                 <br/>
-                <button className='button' onClick={handleAccuseButtonClick} disabled={isDisabled || accuseMade}>Accuse</button>
+                <button className='button' onClick={handleAccuseButtonClick} disabled={isDisabled || suggestionDisproven || accuseMade}>Accuse</button>
             </div>
             <button className='button' onClick={handleEndTurnButtonClick} disabled={isDisabled}>End Turn</button>
         </div>

@@ -100,6 +100,7 @@ io.on('connection', (socket) => {
         noCardCount = (currentTurn + 1) % users.length;
         currentSuggestion = {};
         io.emit('playerTurn', users[currentTurn]);
+        io.emit('suggestionDisproven', false);
     });
     //
 
@@ -164,6 +165,11 @@ io.on('connection', (socket) => {
             message: card ? `${player} disproved the suggestion` : ` ${player} was unable to disprove the suggestion`,
             timestamp: new Date().toLocaleTimeString()
         };
+
+        if(card)
+        {
+            io.emit('suggestionDisproven', true);
+        }
 
         let exists = playerActions.some(action => action.message === cardResultLogMessage.message && action.timestamp === cardResultLogMessage.timestamp);
 
