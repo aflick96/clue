@@ -179,6 +179,19 @@ io.on('connection', (socket) => {
             accusation.result = true;
             io.emit('userGameResult', true, accusation);
         } else {
+            //update the game log with the player's accusation
+            let newSuggestionLogMessage = {
+                message: accusation.user.name + ' (' + accusation.character + ') accused: ' + accusation.character + ' did it with the ' + accusation.weapon + ' in the ' + accusation.room, 
+                timestamp: new Date().toLocaleTimeString()
+                };
+    
+            let exists = playerActions.some(action => action.message === newSuggestionLogMessage.message && action.timestamp === newSuggestionLogMessage.timestamp);
+    
+            if (!exists) {
+            playerActions.unshift(newSuggestionLogMessage);
+            };
+            io.emit('updateGameLog', playerActions);
+            
             accusation.result = false;
             io.emit('userGameResult', false, accusation);
         }
