@@ -20,7 +20,7 @@ const characterGifs = {
 const AccusationResult = ({accusation, playAgain}) => {
 
     //Get the gif for the winning character
-    const winnerGif = characterGifs[accusation.character];
+    const winnerGif = characterGifs[accusation.user.character];
 
     return(
         <div className='accusation-result'>
