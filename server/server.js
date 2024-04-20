@@ -13,13 +13,14 @@ const io = new Server(server, {
 
 app.use(cors());
 
-//Store the joined users on the server side --> array of objects {name, character, ready, character color, position}
+//Store the joined users on the server side --> array of objects {name, character, ready, active, character color, position}
 let users = [];
 let currentTurn = 0;
 let availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
 let playerActions = [];
 let currentSuggestion = {};
 let noCardCount = 1;
+let numActivePlayers = 0;
 
 let caseFile = {
     'suspect': '',
@@ -55,6 +56,7 @@ io.on('connection', (socket) => {
         if(users.length < 6){
             socket.name = data.name; //store socket name to identify the user
             socket.character = data.character; //store socket character to identify the user
+            data.active = true;
             users.push(data);
             io.emit('updateLobby', users); 
         } else {
@@ -75,15 +77,23 @@ io.on('connection', (socket) => {
                 
         const user = users.find((u) => u.name === userName);
         if (user) { user.ready = true}; 
-
         io.emit('updateLobby', users);
 
         const allReady = users.every(u => u.ready === true)
         if(allReady && users.length > 2) {
-            addPlayerStartingPostions();
+            numActivePlayers = users.length;
             assignCardsToPlayers();
             io.emit('updateLobby', users);
             io.emit('allPlayersReady', true);
+
+            // Add the inactive players to the list
+            while(availableCharacters.length !== 0)
+            {
+                users.push({name: availableCharacters[0], character: availableCharacters[0], active: false});
+                availableCharacters.shift();
+            }
+            // Move players to their starting positions
+            addPlayerStartingPostions();
         }
     });
     //
@@ -96,8 +106,8 @@ io.on('connection', (socket) => {
 
     //Update the current player
     socket.on('completeTurn', () => {
-        currentTurn = (currentTurn + 1) % users.length;
-        noCardCount = (currentTurn + 1) % users.length;
+        currentTurn = (currentTurn + 1) % numActivePlayers;
+        noCardCount = (currentTurn + 1) % numActivePlayers;
         currentSuggestion = {};
         io.emit('playerTurn', users[currentTurn]);
         io.emit('suggestionDisproven', false);
@@ -155,7 +165,7 @@ io.on('connection', (socket) => {
 
         //update the current suggestion & emit the next player's turn to show the suggestion overlay
         currentSuggestion = suggestion;
-        io.emit('playerShowSelect', users[(currentTurn)], users[(currentTurn + 1) % users.length], suggestion);
+        io.emit('playerShowSelect', users[(currentTurn)], users[(currentTurn + 1) % numActivePlayers], suggestion);
         //
 
     });
@@ -200,6 +210,15 @@ io.on('connection', (socket) => {
             
             accusation.result = false;
             io.emit('userGameResult', false, accusation);
+
+        
+            users.forEach((user, index) => {
+                if (user.name === accusation.user.name) {
+                    users[index].active = false;
+                }
+            });
+        
+            io.emit('playersUpdated', users);
         }
     });
     
@@ -211,7 +230,7 @@ io.on('connection', (socket) => {
 
     //Move to the next player if the current player does not have a card that matches the current suggestion
     socket.on('noCard', () => {
-        noCardCount = (noCardCount + 1) % users.length;
+        noCardCount = (noCardCount + 1) % numActivePlayers;
         if(noCardCount === currentTurn){
             console.log('reached user');
         } else {

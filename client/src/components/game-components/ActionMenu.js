@@ -201,7 +201,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                 <select onChange={handleMoveSelection} value={moveSelection} disabled={isDisabled || moveMade || accuseMade}>
                     <option value="--">--</option>
                     {possibleMovements[currentPlayer.position] && possibleMovements[currentPlayer.position].map((position, index) => {
-                        const isPositionOccupied = players.some(player => player.position === position);
+                        const isPositionOccupied = players.some(player => player.position === position && player.active === true);
                         if (isPositionOccupied) {
                             return(
                                 <option disabled>{position}</option>
