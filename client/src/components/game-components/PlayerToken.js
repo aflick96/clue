@@ -1,5 +1,5 @@
 
-const PlayerToken = ({ color, className }) => {    
+const PlayerToken = ({ color, className, isCurrentPlayer }) => {    
     
     let styling;
 
@@ -12,7 +12,7 @@ const PlayerToken = ({ color, className }) => {
     }
     
     return(
-        <div className={`player-token ${color} ${styling}`}></div>
+        <div className={`player-token ${isCurrentPlayer ? "glow" : ""} ${color} ${styling}`}></div>
     );
 };
 

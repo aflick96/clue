@@ -4,7 +4,7 @@ import './Board.css';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
-const Board = ({ players }) => {
+const Board = ({ players, localPlayerName }) => {
 
     //TODO: this is unnecessary, just use the players array
     const roomPositions = {
@@ -45,13 +45,13 @@ const Board = ({ players }) => {
                             <Room className='room' name="Study" players={roomPositions.study} corner={true}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-study-hall']}/>
+                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-study-hall']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Hall" players={roomPositions.hall}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-hall-lounge']}/>
+                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-hall-lounge']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Lounge" players={roomPositions.lounge} corner={true}/>
@@ -59,19 +59,19 @@ const Board = ({ players }) => {
                     </Grid>
                     <Grid container spacing={1}>
                         <Grid className='tile'item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-study-library']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-study-library']} localPlayerName={localPlayerName}/>
                         </Grid>
                         
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}/>
                         
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-hall-billiard']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-hall-billiard']} localPlayerName={localPlayerName}/>
                         </Grid>
 
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}/>
 
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-lounge-dining']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-lounge-dining']} localPlayerName={localPlayerName}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={1}>
@@ -79,13 +79,13 @@ const Board = ({ players }) => {
                             <Room className='room' name="Library" players={roomPositions.library}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-library-billiard']}/>
+                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-library-billiard']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Billiard Room" players={roomPositions.billiard}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-billiard-dining']}/>
+                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-billiard-dining']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Dining Room" players={roomPositions.dining}/>
@@ -93,19 +93,19 @@ const Board = ({ players }) => {
                     </Grid>
                     <Grid container spacing={1}>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-library-conservatory']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-library-conservatory']} localPlayerName={localPlayerName}/>
                         </Grid>
 
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}/>
                         
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-billiard-ballroom']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-billiard-ballroom']} localPlayerName={localPlayerName}/>
                         </Grid>
 
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}/>
                         
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-dining-kitchen']}/>
+                            <Hallway className="vertical-hallway" occupiedBy={hallwayPositions['hallway-dining-kitchen']} localPlayerName={localPlayerName}/>
                         </Grid>
                     </Grid>
                     <Grid container spacing={1}>
@@ -113,13 +113,13 @@ const Board = ({ players }) => {
                             <Room className='room' name="Conservatory" players={roomPositions.conservatory} corner={true}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                        <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-conservatory-ballroom']}/>
+                        <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-conservatory-ballroom']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Ballroom" players={roomPositions.ballroom}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
-                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-ballroom-kitchen']}/>
+                            <Hallway className="horizontal-hallway" occupiedBy={hallwayPositions['hallway-ballroom-kitchen']} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid className='tile' item xs={distribution} style={{paddingLeft: '0px'}}>
                             <Room className='room' name="Kitchen" players={roomPositions.kitchen} corner={true}/>
