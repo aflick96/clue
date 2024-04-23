@@ -5,6 +5,12 @@ import AccusationEnsure from '../overlay-components/AccusationEnsure';
 const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade, endTurn }) => {
     
     const possibleMovements = {
+		'above-hallway-hall-lounge': ['hallway-hall-lounge'],
+		'right-hallway-lounge-dining': ['hallway-lounge-dining'],
+		'below-hallway-ballroom-kitchen': ['hallway-ballroom-kitchen'],
+		'below-hallway-conservatory-ballroom': ['hallway-conservatory-ballroom'],
+		'left-hallway-library-conservatory': ['hallway-library-conservatory'],
+		'left-hallway-study-library': ['hallway-study-library'],
         'hallway-study-hall': ['Study', 'Hall'],
         'hallway-hall-lounge': ['Hall', 'Lounge'],
         'hallway-study-library': ['Study', 'Library'],
@@ -109,8 +115,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
             setSuggestionDisproven(false);
             setTimeout(() => setShowSuggestMessage(false), 2000);
         } 
-        //
-          
+
         //Otherwise, emit a socket event to the server to update the game log with the suggestion
         //and emit a socket event to the server to update a suggested character's position if they are on the board
         else {
