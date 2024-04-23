@@ -286,12 +286,12 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 //Add starting positions to the users array based on their character
 const addPlayerStartingPostions = () => {
     const startingPositions = [
-        { name: 'Miss Scarlet', color: 'red', position: 'hallway-hall-lounge' },
-        { name: 'Col. Mustard', color: 'yellow', position: 'hallway-lounge-dining' },
-        { name: 'Mrs. White', color: 'white', position: 'hallway-ballroom-kitchen' },
-        { name: 'Mr. Green', color: 'green', position: 'hallway-conservatory-ballroom' },
-        { name: 'Mrs. Peacock', color:'blue', position: 'hallway-library-conservatory' },
-        { name: 'Prof. Plum', color: 'purple', position: 'hallway-study-library' },        
+        { name: 'Miss Scarlet', color: 'red', position: 'above-hallway-hall-lounge' },
+        { name: 'Col. Mustard', color: 'yellow', position: 'right-hallway-lounge-dining' },
+        { name: 'Mrs. White', color: 'white', position: 'below-hallway-ballroom-kitchen' },
+        { name: 'Mr. Green', color: 'green', position: 'below-hallway-conservatory-ballroom' },
+        { name: 'Mrs. Peacock', color:'blue', position: 'left-hallway-library-conservatory' },
+        { name: 'Prof. Plum', color: 'purple', position: 'left-hallway-study-library' },
     ]
 
     users.map(user => {
