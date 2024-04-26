@@ -134,7 +134,7 @@ const Game = ({ hasGameStarted, socket, localPlayerName, playerTurn, playAgain }
                 <Grid item xs={8} className='board-logs'>
                     <Grid container direction="column" spacing={1}>
                         <Grid item xs={12}>
-                            <Board players={players}/>
+                            <Board players={players} localPlayerName={localPlayerName}/>
                         </Grid>
                         <Grid container direction="row" spacing={1}>
                             <Grid item xs={5}>
