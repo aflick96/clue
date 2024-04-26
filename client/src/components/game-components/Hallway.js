@@ -1,6 +1,6 @@
 import PlayerToken from './PlayerToken';
 
-const PlayerMarker = ({ characterName, markerPosition }) => {
+const PlayerMarker = ({ character, markerPosition, className, isCurrentPlayer }) => {
 	// Default setup for top marer display
 	let top = '0%';
 	let flexDirection = 'column';
@@ -10,14 +10,12 @@ const PlayerMarker = ({ characterName, markerPosition }) => {
 	if (markerPosition === 'left') {
 		top = '';
 		flexDirection = 'row';
-		alignItems = '';
 		justifyContent = 'flex-start';
 	} else if (markerPosition === 'right') {
 		top = '';
 		flexDirection = 'row-reverse';
-		alignItems = '';
 	} else if (markerPosition === 'bottom') {
-		top = '75%';
+		top = '61%';
 		flexDirection = 'column-reverse';
 	}
 
@@ -27,7 +25,8 @@ const PlayerMarker = ({ characterName, markerPosition }) => {
 				flexDirection: flexDirection,
 				alignItems: alignItems,
 				justifyContent: justifyContent}}>
-			{characterName}
+			<p style={{ margin: "1px", padding: "2px" }}>{character.character}</p>
+			<PlayerToken {...character} className={className} isCurrentPlayer={isCurrentPlayer} out={true}/>
 			{
 				markerPosition === 'left' ?
 				<span>&rarr;</span> :
@@ -48,7 +47,7 @@ const Hallway = ({ occupiedBy, aboveHallway, markerPosition, className, localPla
                     <PlayerToken {...occupiedBy} className={className} isCurrentPlayer={(occupiedBy.name === localPlayerName)}/>
                 }
 				{aboveHallway &&
-					<PlayerMarker characterName={aboveHallway.character} markerPosition={markerPosition} />
+					<PlayerMarker character={aboveHallway} markerPosition={markerPosition} className={className} isCurrentPlayer={(aboveHallway.name === localPlayerName)}/>
 				}
             </div>
     );

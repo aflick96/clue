@@ -1,12 +1,12 @@
 
-const PlayerToken = ({ color, className, isCurrentPlayer }) => {    
+const PlayerToken = ({ color, className, isCurrentPlayer, out }) => {    
     
     let styling;
 
     if(className === 'horizontal-hallway') {
-        styling = 'player-token-horizontal';
+        styling = out ? 'player-token-horizontal-out' : 'player-token-horizontal';
     } else if (className === 'vertical-hallway') {
-        styling = 'player-token-vertical';
+        styling = out ? 'player-token-vertical-out' : 'player-token-vertical';
     } else if (className === 'room') {
         styling = 'player-token-room';
     }

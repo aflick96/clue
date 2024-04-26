@@ -60,6 +60,18 @@
     width: 50%;
 }
 
+.player-token-horizontal-out {
+	height: 20px;
+	width: 5%;
+	margin: 4px;
+}
+
+.player-token-vertical-out {
+	height: 25px;
+	width: 5%;
+	margin: 4px;
+}
+
 .player-token.glow {
     outline: thick double black;
 }
@@ -74,11 +86,11 @@
 }
 
 .player-token.yellow {
-    background-color: yellow;
+    background-color: #ffd300;
 }
 
 .player-token.white {
-    background-color: white;
+    background-color: whitesmoke;
 }
 
 .player-token.green {
