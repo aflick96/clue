@@ -32,13 +32,13 @@ const PlayerMarker = ({ character, markerPosition, className, isCurrentPlayer })
 				flexDirection: flexDirection,
 				alignItems: alignItems,
 				justifyContent: justifyContent}}>
-			<p style={{ margin: "1px", padding: "2px" }}>{characterName}</p>
+			{/*<p style={{ margin: "1px", padding: "2px" }}>{characterName}</p>*/}
 			<PlayerToken {...character} className={className} isCurrentPlayer={isCurrentPlayer} out={true}/>
 			{
 				markerPosition === 'left' ?
-				<span>&rarr;</span> :
+				<span>&#10230;</span> :
 				markerPosition === 'right' ?
-				<span>&larr;</span> :
+				<span>&#10229;</span> :
 				markerPosition === 'bottom' ?
 				<span>&uarr;</span> :
 				<span>&darr;</span>
