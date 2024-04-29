@@ -19,13 +19,20 @@ const PlayerMarker = ({ character, markerPosition, className, isCurrentPlayer })
 		flexDirection = 'column-reverse';
 	}
 
+	let characterName = character.character;
+	if (markerPosition === 'left' || markerPosition === 'right') {
+		if (characterName.length > 5) {
+			characterName = characterName.substring(0, 5) + '...';
+		} 
+	}
+
 	return (
 		<div className='character-marker' style={{
 				top: top,
 				flexDirection: flexDirection,
 				alignItems: alignItems,
 				justifyContent: justifyContent}}>
-			<p style={{ margin: "1px", padding: "2px" }}>{character.character}</p>
+			<p style={{ margin: "1px", padding: "2px" }}>{characterName}</p>
 			<PlayerToken {...character} className={className} isCurrentPlayer={isCurrentPlayer} out={true}/>
 			{
 				markerPosition === 'left' ?
