@@ -18,7 +18,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
         'hallway-conservatory-ballroom': ['Conservatory', 'Ballroom'],
         'hallway-ballroom-kitchen': ['Ballroom', 'Kitchen'],
         'Study': ['Kitchen', 'hallway-study-hall', 'hallway-study-library'],
-        'Hall': ['hallway-study-hall', 'hallway-hall-lounge', 'hallway-hall-billiard', 'hallway-hall-lounge'],
+        'Hall': ['hallway-study-hall', 'hallway-hall-lounge', 'hallway-hall-billiard'],
         'Lounge': ['hallway-hall-lounge', 'hallway-lounge-dining', 'Conservatory'],
         'Library': ['hallway-study-library', 'hallway-library-billiard', 'hallway-library-conservatory'],
         'Billiard Room': ['hallway-hall-billiard', 'hallway-library-billiard', 'hallway-billiard-dining', 'hallway-billiard-ballroom'],
