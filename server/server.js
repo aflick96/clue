@@ -13,7 +13,7 @@ const io = new Server(server, {
 
 app.use(cors());
 
-//Store the joined users on the server side --> array of objects {name, character, ready, active, character color, position}
+//Store the joined users on the server side --> array of objects {name, character, ready, active, character color, position, involuntarilyMoved}
 let users = [];
 let currentTurn = 0;
 let availableCharacters = ["Miss Scarlet", "Prof. Plum", "Col. Mustard", "Mrs. Peacock", "Mr. Green", "Mrs. White"];
@@ -57,6 +57,7 @@ io.on('connection', (socket) => {
             socket.name = data.name; //store socket name to identify the user
             socket.character = data.character; //store socket character to identify the user
             data.active = true;
+            data.involuntarilyMoved = false;
             users.push(data);
             io.emit('updateLobby', users); 
         } else {
@@ -106,6 +107,7 @@ io.on('connection', (socket) => {
 
     //Update the current player
     socket.on('completeTurn', () => {
+        users[currentTurn].involuntarilyMoved = false;
         currentTurn = (currentTurn + 1) % numActivePlayers;
         noCardCount = (currentTurn + 1) % numActivePlayers;
         currentSuggestion = {};
@@ -123,6 +125,11 @@ io.on('connection', (socket) => {
             if (user.name === player.name) {
                 pos = users[index].position; 
                 users[index].position = newPosition;
+
+                if(user.name !== users[currentTurn].name)
+                {
+                    users[index].involuntarilyMoved = true;
+                }
             }
         });
 

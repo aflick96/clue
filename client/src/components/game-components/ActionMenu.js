@@ -40,7 +40,6 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
     const [suggestionDisproven, setSuggestionDisproven] = useState(false);
     const [showMoveMessage, setShowMoveMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid move
     const [showSuggestMessage, setShowSuggestMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid suggestion
-    const [inRoom, setInRoom] = useState(false); //state for whether the player is in a room --> locks the suggestion dropdowns and suggest button until the player ends their turn
     const [accuseMade, setAccuseMade] = useState(false); //state for whether an accusation has been made --> locks the accusation dropdowns and accuse button until the player ends their turn
     const [accuseClicked, setAccuseClicked] = useState(false); //state for whether the player has clicked the accuse button
     const [showAccuseMessage, setShowAccuseMessage] = useState(false); //state for whether to show an alert message when the player has not selected a valid accusation
@@ -69,18 +68,12 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
             setTimeout(() => setShowMoveMessage(false), 2000);
 
         //Otherwise, emit a socket event to the server to update the player's position, 
-        //set the movemade state to true, 
-        //and set the inroom state to true if the player is in a room
+        //and set the movemade state to true
         } else {
             socket.emit('updatePlayerPosition', currentPlayer, moveSelection);
             currentPlayer.position = moveSelection;
             setMoveMade(true);
             setSuggestMade(false);
-            if (!moveSelection.includes('hallway-')) {
-                setInRoom(true);
-            } else {
-                setInRoom(false);
-            }
         }
         //
     };
@@ -176,9 +169,22 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
         setMoveMade(false);
         setSuggestionSuspectSelection('--');
         setSuggestionWeaponSelection('--');
+        setSuggestMade(false);
+        setAccuseMade(false);
         endTurn();
     };
     //
+
+    const isBlocked = () => {
+        var blocked = true;
+        possibleMovements[currentPlayer.position].forEach((position) => {
+            if(!players.some(player => player.position === position && player.active === true))
+            {
+                blocked = false;
+            }
+        });
+        return blocked;
+    };
 
     return (
         <>
@@ -226,21 +232,21 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                     </div>
                 )}
 
-                <select onChange={handleSuspectSuggestionSelection} value={suggestionSuspectSelection} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>
+                <select onChange={handleSuspectSuggestionSelection} value={suggestionSuspectSelection} disabled={isDisabled || suggestMade || String(currentPlayer.position).includes('hallway-') || accuseMade|| (!moveMade && !currentPlayer.involuntarilyMoved)}>
                     <option value="--">--</option>
                     {characters.map((character, index) =>
                         <option>{character}</option>
                     )}
                 </select>
                 <p className='label-lvl-2'>Weapon</p>
-                <select onChange={handleWeaponSuggestionSelection} value={suggestionWeaponSelection} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>
+                <select onChange={handleWeaponSuggestionSelection} value={suggestionWeaponSelection} disabled={isDisabled || suggestMade || String(currentPlayer.position).includes('hallway-') || accuseMade|| (!moveMade && !currentPlayer.involuntarilyMoved)}>
                     <option value="--">--</option>
                     {weapons.map((weapon, index) =>
                         <option>{weapon}</option>
                     )}
                 </select>
                 <br/>
-                <button className='button' onClick={handleSuggestButtonClick} disabled={isDisabled || suggestMade || !inRoom || accuseMade}>Suggest</button>
+                <button className='button' onClick={handleSuggestButtonClick} disabled={isDisabled || suggestMade || String(currentPlayer.position).includes('hallway-') || accuseMade || (!moveMade && !currentPlayer.involuntarilyMoved)}>Suggest</button>
             </div>
             <div className="accuse">
                 <p className='label'>Accuse</p>
@@ -277,7 +283,7 @@ const ActionMenu = ({ socket, currentPlayer, players, isDisabled, suggestionMade
                 <br/>
                 <button className='button' onClick={handleAccuseButtonClick} disabled={isDisabled || suggestionDisproven || accuseMade}>Accuse</button>
             </div>
-            <button className='button' onClick={handleEndTurnButtonClick} disabled={isDisabled}>End Turn</button>
+            <button className='button' onClick={handleEndTurnButtonClick} disabled={isDisabled || (!moveMade && !currentPlayer.involuntarilyMoved && !isBlocked()) || (moveMade && !suggestMade && !String(currentPlayer.position).includes('hallway-'))}>End Turn</button>
         </div>
         {
             accuseClicked && (
